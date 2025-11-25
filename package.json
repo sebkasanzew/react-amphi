@@ -1,0 +1,21 @@
+{
+  "name": "react-amphi-monorepo",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "pnpm dev:web",
+    "dev:web": "turbo dev --filter=@amphi/web --log-prefix=none",
+    "dev:cli": "pnpm --filter @amphi/cli dev",
+    "test": "pnpm --filter @amphi/web test:e2e",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck"
+  },
+  "devDependencies": {
+    "turbo": "2.6.1",
+    "typescript": "5.9.3",
+    "eslint": "9.39.1",
+    "prettier": "3.6.2"
+  },
+  "packageManager": "pnpm@10.23.0"
+}

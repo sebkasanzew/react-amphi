@@ -1,0 +1,264 @@
+import { WebSocketServer, WebSocket } from 'ws';
+import * as pty from 'node-pty';
+import { IPty } from 'node-pty';
+import * as path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const PORT = parseInt(process.env.PTY_PORT || '3001', 10);
+
+// Path to the CLI package
+const CLI_PACKAGE_DIR = path.resolve(__dirname, '../../cli');
+
+// CLI command - use tsx for development, node for production
+const CLI_COMMAND = process.env.NODE_ENV === 'production' ? 'node' : 'npx';
+const CLI_ARGS = process.env.NODE_ENV === 'production'
+    ? [path.join(CLI_PACKAGE_DIR, 'dist/cli.js')]
+    : ['tsx', path.join(CLI_PACKAGE_DIR, 'source/cli.tsx')];
+
+// Configuration for restart behavior
+const MAX_RESTART_ATTEMPTS = 5;
+const RESTART_DELAY_MS = 1000;
+const RESTART_BACKOFF_MULTIPLIER = 2;
+
+// Create a clean environment for the CLI process
+// Filter out npm config variables that cause warnings
+function getCleanEnv(): Record<string, string> {
+    const env: Record<string, string> = {};
+    const problematicPrefixes = [
+        'npm_config_',
+        'npm_package_',
+        'npm_lifecycle_',
+    ];
+
+    for (const [key, value] of Object.entries(process.env)) {
+        if (value === undefined) continue;
+
+        // Skip npm-specific config variables that cause warnings
+        const lowerKey = key.toLowerCase();
+        const isProblematic = problematicPrefixes.some(prefix =>
+            lowerKey.startsWith(prefix)
+        );
+
+        if (!isProblematic) {
+            env[key] = value;
+        }
+    }
+
+    return env;
+}
+
+const wss = new WebSocketServer({ port: PORT });
+
+console.log(`PTY WebSocket server running on ws://localhost:${PORT}`);
+console.log(`CLI will be spawned from: ${CLI_PACKAGE_DIR}`);
+
+interface ClientSession {
+    ws: WebSocket;
+    ptyProcess: IPty | null;
+    restartAttempts: number;
+    isClosing: boolean;
+    pendingCols: number;
+    pendingRows: number;
+}
+
+function sendStatusMessage(ws: WebSocket, type: string, message: string) {
+    if (ws.readyState === WebSocket.OPEN) {
+        // Send as ANSI escape sequence to display in terminal
+        const coloredMessage = type === 'error'
+            ? `\x1b[31m${message}\x1b[0m\r\n`  // Red for errors
+            : type === 'warning'
+                ? `\x1b[33m${message}\x1b[0m\r\n`  // Yellow for warnings
+                : `\x1b[36m${message}\x1b[0m\r\n`; // Cyan for info
+        ws.send(coloredMessage);
+    }
+}
+
+function spawnCLI(session: ClientSession): IPty | null {
+    if (session.isClosing) {
+        return null;
+    }
+
+    try {
+        const ptyProcess = pty.spawn(CLI_COMMAND, CLI_ARGS, {
+            name: 'xterm-256color',
+            cols: session.pendingCols || 80,
+            rows: session.pendingRows || 24,
+            cwd: CLI_PACKAGE_DIR,
+            env: {
+                ...getCleanEnv(),
+                // Force color output for Ink
+                FORCE_COLOR: '1',
+                // Ensure proper terminal behavior
+                TERM: 'xterm-256color',
+            },
+        });
+
+        console.log(`Spawned CLI process with PID: ${ptyProcess.pid}`);
+
+        // Send PTY output to the WebSocket client
+        ptyProcess.onData((data: string) => {
+            if (session.ws.readyState === WebSocket.OPEN) {
+                session.ws.send(data);
+            }
+        });
+
+        // Handle PTY process exit - this is where we handle crashes
+        ptyProcess.onExit(({ exitCode, signal }) => {
+            console.log(`CLI process exited with code ${exitCode}, signal ${signal}`);
+            session.ptyProcess = null;
+
+            if (session.isClosing) {
+                return;
+            }
+
+            // Calculate restart delay with exponential backoff
+            const delay = RESTART_DELAY_MS * Math.pow(RESTART_BACKOFF_MULTIPLIER, session.restartAttempts);
+
+            if (session.restartAttempts < MAX_RESTART_ATTEMPTS) {
+                session.restartAttempts++;
+
+                if (exitCode !== 0) {
+                    sendStatusMessage(session.ws, 'warning',
+                        `[System] CLI crashed (exit code: ${exitCode}). Restarting in ${delay / 1000}s... (attempt ${session.restartAttempts}/${MAX_RESTART_ATTEMPTS})`);
+                } else {
+                    sendStatusMessage(session.ws, 'info',
+                        `[System] CLI exited normally. Restarting in ${delay / 1000}s...`);
+                }
+
+                // Clear terminal before restart
+                setTimeout(() => {
+                    if (!session.isClosing && session.ws.readyState === WebSocket.OPEN) {
+                        // Clear screen and move cursor to top
+                        session.ws.send('\x1b[2J\x1b[H');
+                        sendStatusMessage(session.ws, 'info', '[System] Restarting CLI...');
+
+                        const newPty = spawnCLI(session);
+                        if (newPty) {
+                            session.ptyProcess = newPty;
+                            // Reset restart counter on successful spawn after a delay
+                            setTimeout(() => {
+                                if (session.ptyProcess && session.ptyProcess.pid) {
+                                    session.restartAttempts = 0;
+                                }
+                            }, 5000);
+                        }
+                    }
+                }, delay);
+            } else {
+                sendStatusMessage(session.ws, 'error',
+                    `[System] CLI has crashed too many times (${MAX_RESTART_ATTEMPTS} attempts). Connection will be closed.`);
+                sendStatusMessage(session.ws, 'error',
+                    '[System] Please refresh the page to reconnect.');
+
+                // Close the WebSocket after a brief delay to allow message to be sent
+                setTimeout(() => {
+                    if (session.ws.readyState === WebSocket.OPEN) {
+                        session.ws.close();
+                    }
+                }, 1000);
+            }
+        });
+
+        return ptyProcess;
+    } catch (error) {
+        console.error('Failed to spawn CLI process:', error);
+        sendStatusMessage(session.ws, 'error', `[System] Failed to start CLI: ${error}`);
+        return null;
+    }
+}
+
+wss.on('connection', (ws: WebSocket) => {
+    console.log('Client connected');
+
+    const session: ClientSession = {
+        ws,
+        ptyProcess: null,
+        restartAttempts: 0,
+        isClosing: false,
+        pendingCols: 80,
+        pendingRows: 24,
+    };
+
+    // Send initial status message
+    sendStatusMessage(ws, 'info', '[System] Starting Amphi CLI...');
+
+    // Spawn the CLI process
+    session.ptyProcess = spawnCLI(session);
+
+    if (!session.ptyProcess) {
+        sendStatusMessage(ws, 'error', '[System] Failed to start CLI. Please try again later.');
+        ws.close();
+        return;
+    }
+
+    // Handle incoming messages from the WebSocket client
+    ws.on('message', (message: Buffer | ArrayBuffer | Buffer[]) => {
+        const data = message.toString();
+
+        // Handle resize messages (JSON format)
+        try {
+            const parsed = JSON.parse(data);
+            if (parsed.type === 'resize' && parsed.cols && parsed.rows) {
+                session.pendingCols = parsed.cols;
+                session.pendingRows = parsed.rows;
+                if (session.ptyProcess) {
+                    session.ptyProcess.resize(parsed.cols, parsed.rows);
+                    console.log(`Resized terminal to ${parsed.cols}x${parsed.rows}`);
+                }
+                return;
+            }
+        } catch {
+            // Not JSON, treat as regular input
+        }
+
+        // Only send input if CLI process is running
+        // This prevents any shell access if CLI is down
+        if (session.ptyProcess) {
+            session.ptyProcess.write(data);
+        } else {
+            // CLI is not running, don't forward input
+            // This is a security measure to prevent shell access
+            sendStatusMessage(ws, 'warning', '[System] CLI is not running. Input ignored.');
+        }
+    });
+
+    // Handle WebSocket close
+    ws.on('close', () => {
+        console.log('Client disconnected, cleaning up');
+        session.isClosing = true;
+        if (session.ptyProcess) {
+            session.ptyProcess.kill();
+            session.ptyProcess = null;
+        }
+    });
+
+    // Handle WebSocket errors
+    ws.on('error', (error) => {
+        console.error('WebSocket error:', error);
+        session.isClosing = true;
+        if (session.ptyProcess) {
+            session.ptyProcess.kill();
+            session.ptyProcess = null;
+        }
+    });
+});
+
+// Handle server shutdown gracefully
+process.on('SIGINT', () => {
+    console.log('\nShutting down PTY server...');
+    wss.close(() => {
+        console.log('Server closed');
+        process.exit(0);
+    });
+});
+
+process.on('SIGTERM', () => {
+    console.log('\nShutting down PTY server...');
+    wss.close(() => {
+        console.log('Server closed');
+        process.exit(0);
+    });
+});

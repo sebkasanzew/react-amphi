@@ -1,0 +1,23 @@
+{
+  "name": "@amphi/cli",
+  "version": "0.0.1",
+  "type": "module",
+  "bin": "dist/cli.js",
+  "scripts": {
+    "build": "tsup source/cli.tsx --format esm --clean",
+    "dev": "tsx source/cli.tsx",
+    "start": "node dist/cli.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "ink": "6.5.1",
+    "react": "19.2.0",
+    "@amphi/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "typescript": "5.9.3",
+    "tsup": "8.5.1",
+    "tsx": "4.20.6"
+  }
+}
