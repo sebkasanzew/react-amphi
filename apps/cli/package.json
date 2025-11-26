@@ -1,36 +1,38 @@
 {
-  "name": "@amphi/cli",
-  "version": "0.0.1",
-  "type": "module",
-  "bin": {
-    "amphi": "dist/cli.js"
-  },
-  "main": "dist/cli.js",
-  "exports": {
-    ".": {
-      "import": "./dist/cli.js",
-      "default": "./dist/cli.js"
-    }
-  },
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsx source/cli.tsx",
-    "start": "node dist/cli.js",
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@amphi/shared": "workspace:*",
-    "@tanstack/react-query": "5.90.11",
-    "exceljs": "4.4.0",
-    "ink": "6.5.1",
-    "react": "19.2.0",
-    "uuid": "13.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "24.10.1",
-    "@types/react": "19.2.7",
-    "tsup": "8.5.1",
-    "tsx": "4.20.6",
-    "typescript": "5.9.3"
-  }
+	"name": "@amphi/cli",
+	"version": "0.0.1",
+	"type": "module",
+	"bin": {
+		"amphi": "dist/cli.js"
+	},
+	"main": "dist/cli.js",
+	"exports": {
+		".": {
+			"import": "./dist/cli.js",
+			"default": "./dist/cli.js"
+		}
+	},
+	"scripts": {
+		"build": "tsup",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"dev": "tsx source/cli.tsx",
+		"start": "node dist/cli.js",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@amphi/shared": "workspace:*",
+		"@tanstack/react-query": "5.90.11",
+		"exceljs": "4.4.0",
+		"ink": "6.5.1",
+		"react": "19.2.0",
+		"uuid": "13.0.0"
+	},
+	"devDependencies": {
+		"@types/node": "24.10.1",
+		"@types/react": "19.2.7",
+		"tsup": "8.5.1",
+		"tsx": "4.20.6",
+		"typescript": "5.9.3"
+	}
 }

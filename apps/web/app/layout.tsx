@@ -1,19 +1,19 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: "Amphi Web Terminal",
-    description: "Web interface for Amphi",
-};
+	title: 'Amphi Web Terminal',
+	description: 'Web interface for Amphi',
+}
 
 export default function RootLayout({
-    children,
+	children,
 }: Readonly<{
-    children: React.ReactNode;
+	children: React.ReactNode
 }>) {
-    return (
-        <html lang="en">
-            <head>
-                <style>{`
+	return (
+		<html lang="en">
+			<head>
+				<style>{`
                     /* Hide xterm scrollbar to prevent white line on right */
                     .xterm-viewport::-webkit-scrollbar {
                         width: 0;
@@ -23,8 +23,8 @@ export default function RootLayout({
                         scrollbar-width: none;
                     }
                 `}</style>
-            </head>
-            <body style={{ margin: 0 }}>{children}</body>
-        </html>
-    );
+			</head>
+			<body style={{ margin: 0 }}>{children}</body>
+		</html>
+	)
 }

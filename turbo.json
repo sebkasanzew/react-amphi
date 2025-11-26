@@ -1,20 +1,26 @@
 {
-  "$schema": "https://turbo.build/schema.json",
-  "tasks": {
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
-    },
-    "lint": {},
-    "dev": {
-      "cache": false,
-      "persistent": true
-    },
-    "test:e2e": {
-      "cache": false
-    },
-    "typecheck": {
-      "dependsOn": ["^typecheck"]
-    }
-  }
+	"$schema": "https://turbo.build/schema.json",
+	"globalPassThroughEnv": ["AMPHI_WEB_MODE", "CI", "PTY_PORT", "DOWNLOAD_PORT", "NODE_ENV"],
+	"tasks": {
+		"build": {
+			"dependsOn": ["^build"],
+			"outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+		},
+		"lint": {
+			"cache": false
+		},
+		"lint:fix": {
+			"cache": false
+		},
+		"dev": {
+			"cache": false,
+			"persistent": true
+		},
+		"test:e2e": {
+			"cache": false
+		},
+		"typecheck": {
+			"dependsOn": ["^typecheck"]
+		}
+	}
 }

@@ -1,21 +1,33 @@
 {
-  "name": "react-amphi-monorepo",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "build": "turbo build",
-    "dev": "pnpm dev:web",
-    "dev:web": "turbo dev --filter=@amphi/web --log-prefix=none",
-    "dev:cli": "pnpm --filter @amphi/cli dev",
-    "test": "pnpm --filter @amphi/web test:e2e",
-    "lint": "turbo lint",
-    "typecheck": "turbo typecheck"
-  },
-  "devDependencies": {
-    "turbo": "2.6.1",
-    "typescript": "5.9.3",
-    "eslint": "9.39.1",
-    "prettier": "3.6.2"
-  },
-  "packageManager": "pnpm@10.23.0"
+	"name": "react-amphi-monorepo",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"build": "turbo build",
+		"dev": "pnpm dev:web",
+		"dev:web": "turbo dev --filter=@amphi/web --log-prefix=none",
+		"dev:cli": "pnpm --filter @amphi/cli dev",
+		"test": "pnpm --filter @amphi/web test:e2e",
+		"lint": "turbo lint && pnpm run lint:root",
+		"lint:fix": "turbo lint -- --fix && pnpm run lint:fix:root",
+		"lint:root": "eslint './{*.json,*.js,*.mjs,*.mts,*.ts}' --ext .json,.jsonc,.json5,.js,.ts,.mjs,.mts --ignore-pattern 'apps/**' --ignore-pattern 'packages/**'",
+		"lint:fix:root": "eslint --fix './{*.json,*.js,*.mjs,*.mts,*.ts}' --ext .json,.jsonc,.json5,.js,.ts,.mjs,.mts --ignore-pattern 'apps/**' --ignore-pattern 'packages/**'",
+		"typecheck": "turbo typecheck"
+	},
+	"devDependencies": {
+		"@eslint/js": "9.39.1",
+		"@typescript-eslint/parser": "8.48.0",
+		"eslint": "9.39.1",
+		"eslint-config-flat-gitignore": "2.1.0",
+		"eslint-config-prettier": "10.1.8",
+		"eslint-plugin-jsonc": "2.21.0",
+		"eslint-plugin-playwright": "2.3.0",
+		"eslint-plugin-prettier": "5.5.4",
+		"eslint-plugin-turbo": "2.6.1",
+		"eslint-plugin-unicorn": "62.0.0",
+		"prettier": "3.6.2",
+		"turbo": "2.6.1",
+		"typescript": "5.9.3"
+	},
+	"packageManager": "pnpm@10.23.0"
 }

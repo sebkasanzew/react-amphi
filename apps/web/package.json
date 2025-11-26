@@ -1,40 +1,40 @@
 {
-  "name": "@amphi/web",
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "concurrently \"next dev\" \"pnpm exec tsx server/pty-server.ts\"",
-    "server": "pnpm exec tsx server/pty-server.ts",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint .",
-    "test:e2e": "playwright test",
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@amphi/shared": "workspace:*",
-    "@xterm/addon-attach": "0.11.0",
-    "@xterm/addon-fit": "0.10.0",
-    "@xterm/xterm": "5.5.0",
-    "next": "16.0.4",
-    "node-pty": "1.0.0",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "ws": "8.18.3"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "3.3.1",
-    "@playwright/test": "1.57.0",
-    "@types/node": "24.10.1",
-    "@types/react": "19.2.7",
-    "@types/react-dom": "19.2.3",
-    "@types/ws": "8.18.1",
-    "concurrently": "9.2.1",
-    "eslint": "9.39.1",
-    "eslint-config-next": "16.0.4",
-    "eslint-plugin-playwright": "2.3.0",
-    "exceljs": "4.4.0",
-    "tsx": "4.20.6",
-    "typescript": "5.9.3",
-    "typescript-eslint": "8.48.0"
-  }
+	"name": "@amphi/web",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "concurrently \"next dev\" \"pnpm exec tsx server/pty-server.ts\"",
+		"server": "pnpm exec tsx server/pty-server.ts",
+		"build": "next build",
+		"start": "next start",
+		"lint": "eslint .",
+		"test:e2e": "playwright test",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@amphi/shared": "workspace:*",
+		"@xterm/addon-attach": "0.11.0",
+		"@xterm/addon-fit": "0.10.0",
+		"@xterm/xterm": "5.5.0",
+		"next": "16.0.4",
+		"node-pty": "1.0.0",
+		"react": "19.2.0",
+		"react-dom": "19.2.0",
+		"ws": "8.18.3"
+	},
+	"devDependencies": {
+		"@eslint/eslintrc": "3.3.1",
+		"@playwright/test": "1.57.0",
+		"@types/node": "24.10.1",
+		"@types/react": "19.2.7",
+		"@types/react-dom": "19.2.3",
+		"@types/ws": "8.18.1",
+		"concurrently": "9.2.1",
+		"eslint": "9.39.1",
+		"eslint-config-next": "16.0.4",
+		"eslint-plugin-playwright": "2.3.0",
+		"exceljs": "4.4.0",
+		"tsx": "4.20.6",
+		"typescript": "5.9.3",
+		"typescript-eslint": "8.48.0"
+	}
 }

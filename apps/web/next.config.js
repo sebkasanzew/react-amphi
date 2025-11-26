@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['@amphi/shared'],
-};
+	transpilePackages: ['@amphi/shared'],
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig
