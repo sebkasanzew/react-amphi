@@ -43,9 +43,9 @@ test.describe('Amphi Web Terminal', () => {
             return !!hook && hook.ws?.readyState === 1;
         }, null, { timeout: 15000 });
 
-        // The terminal should display the CLI app's welcome message
-        // The CLI shows "Welcome to Amphi!" from useTerminalLogic
-        await expect(page.locator('.xterm-rows')).toContainText('Welcome to Amphi', { timeout: 10000 });
+        // The terminal should display the CLI app's users table
+        // The CLI now shows users fetched from JSONPlaceholder API
+        await expect(page.locator('.xterm-rows')).toContainText('Users', { timeout: 15000 });
     });
 
     test('prevents direct shell access - only CLI input is accepted', async ({ page }) => {
@@ -59,7 +59,7 @@ test.describe('Amphi Web Terminal', () => {
         }, null, { timeout: 15000 });
 
         // Wait for CLI to be ready
-        await expect(page.locator('.xterm-rows')).toContainText('Welcome to Amphi', { timeout: 10000 });
+        await expect(page.locator('.xterm-rows')).toContainText('Users', { timeout: 15000 });
 
         // Try sending a shell command - it should NOT execute in a shell
         // The input goes to the CLI app, not to bash/zsh
@@ -70,7 +70,7 @@ test.describe('Amphi Web Terminal', () => {
 
         // Wait for any potential response by checking the terminal content hasn't changed to shell output
         // Use a stability check instead of waitForTimeout
-        await expect(page.locator('.xterm-rows')).toContainText('Amphi', { timeout: 2000 });
+        await expect(page.locator('.xterm-rows')).toContainText('Users', { timeout: 2000 });
 
         // The terminal should NOT show typical shell output like file listings
         // It should still show the CLI interface
@@ -80,6 +80,6 @@ test.describe('Amphi Web Terminal', () => {
         expect(terminalContent).not.toMatch(/drwx|total \d+|-rw-/);
 
         // Should still show the CLI content
-        expect(terminalContent).toContain('Amphi');
+        expect(terminalContent).toContain('Users');
     });
 });

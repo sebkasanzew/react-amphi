@@ -1,6 +1,5 @@
 'use client';
 
-import { ASCII_ART } from '@amphi/shared';
 import dynamic from 'next/dynamic';
 
 // Dynamically import XtermComponent to avoid SSR issues with xterm.js

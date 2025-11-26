@@ -15,8 +15,9 @@
     "type-check": "tsc --noEmit"
   },
   "devDependencies": {
-    "typescript": "5.9.3",
-    "@types/react": "19.2.7"
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.7",
+    "typescript": "5.9.3"
   },
   "dependencies": {
     "react": "19.2.0"

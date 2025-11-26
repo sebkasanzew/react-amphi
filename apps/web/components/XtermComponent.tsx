@@ -3,11 +3,45 @@
 import { useEffect, useRef } from 'react';
 import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
-import { AttachAddon } from '@xterm/addon-attach';
 import '@xterm/xterm/css/xterm.css';
+
+interface DownloadMessage {
+    type: 'download';
+    fileId: string;
+    fileName: string;
+    url: string;
+}
 
 interface XtermComponentProps {
     wsUrl?: string;
+}
+
+/**
+ * Triggers a file download in the browser
+ */
+function triggerDownload(url: string, fileName: string) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+/**
+ * Check if data is a JSON download message
+ */
+function parseDownloadMessage(data: string): DownloadMessage | null {
+    try {
+        const parsed = JSON.parse(data);
+        if (parsed.type === 'download' && parsed.fileId && parsed.fileName && parsed.url) {
+            return parsed as DownloadMessage;
+        }
+    } catch {
+        // Not JSON, ignore
+    }
+    return null;
 }
 
 export default function XtermComponent({ wsUrl = 'ws://localhost:3001' }: XtermComponentProps) {
@@ -61,8 +95,28 @@ export default function XtermComponent({ wsUrl = 'ws://localhost:3001' }: XtermC
         const ws = new WebSocket(wsUrl);
         wsInstance.current = ws;
 
-        const attachAddon = new AttachAddon(ws);
-        term.loadAddon(attachAddon);
+        // Handle incoming WebSocket messages manually to intercept downloads
+        ws.onmessage = (event) => {
+            const data = typeof event.data === 'string' ? event.data : '';
+
+            // Check if this is a download message
+            const downloadMsg = parseDownloadMessage(data);
+            if (downloadMsg) {
+                // Trigger file download in browser
+                triggerDownload(downloadMsg.url, downloadMsg.fileName);
+                return; // Don't send to terminal
+            }
+
+            // Regular terminal data - write to terminal
+            term.write(data);
+        };
+
+        // Handle terminal input - send to WebSocket
+        term.onData((data) => {
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(data);
+            }
+        });
 
         // Expose test hook so Playwright can access the active terminal+socket in tests
         // This is only useful for automated tests and will be cleaned up on unmount.
@@ -114,6 +168,7 @@ export default function XtermComponent({ wsUrl = 'ws://localhost:3001' }: XtermC
     return (
         <div
             ref={terminalRef}
+            className="xterm-container"
             // Make this container a flexible child so it can shrink/grow inside
             // the parent's flexbox without forcing the page to overflow.
             style={{
@@ -123,6 +178,7 @@ export default function XtermComponent({ wsUrl = 'ws://localhost:3001' }: XtermC
                 minHeight: 400,
                 display: 'flex',
                 flex: '1 1 0',
+                overflow: 'hidden',
             }}
         />
     );

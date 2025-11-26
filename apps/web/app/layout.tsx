@@ -12,6 +12,18 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
+            <head>
+                <style>{`
+                    /* Hide xterm scrollbar to prevent white line on right */
+                    .xterm-viewport::-webkit-scrollbar {
+                        width: 0;
+                        height: 0;
+                    }
+                    .xterm-viewport {
+                        scrollbar-width: none;
+                    }
+                `}</style>
+            </head>
             <body style={{ margin: 0 }}>{children}</body>
         </html>
     );

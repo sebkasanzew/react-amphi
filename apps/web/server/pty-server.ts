@@ -2,12 +2,23 @@ import { WebSocketServer, WebSocket } from 'ws';
 import * as pty from 'node-pty';
 import { IPty } from 'node-pty';
 import * as path from 'path';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as http from 'http';
 import { fileURLToPath } from 'url';
+import {
+    parseDownloadSequence,
+    stripDownloadSequences,
+} from '@amphi/shared';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const PORT = parseInt(process.env.PTY_PORT || '3001', 10);
+const HTTP_PORT = parseInt(process.env.DOWNLOAD_PORT || '3002', 10);
+
+// Temp directory for download files (same as CLI)
+const TEMP_DIR = path.join(os.tmpdir(), 'amphi-downloads');
 
 // Path to the CLI package
 const CLI_PACKAGE_DIR = path.resolve(__dirname, '../../cli');
@@ -49,6 +60,88 @@ function getCleanEnv(): Record<string, string> {
 
     return env;
 }
+
+// Create HTTP server for file downloads
+const httpServer = http.createServer((req, res) => {
+    // CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+        res.writeHead(204);
+        res.end();
+        return;
+    }
+
+    if (req.method !== 'GET') {
+        res.writeHead(405, { 'Content-Type': 'text/plain' });
+        res.end('Method Not Allowed');
+        return;
+    }
+
+    const url = new URL(req.url || '/', `http://localhost:${HTTP_PORT}`);
+    const pathParts = url.pathname.split('/');
+
+    // Expect /download/:fileId
+    if (pathParts[1] !== 'download' || !pathParts[2]) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('Not Found');
+        return;
+    }
+
+    const fileId = pathParts[2];
+    // Remove .xlsx extension if present in the request
+    const cleanFileId = fileId.replace(/\.xlsx$/, '');
+    const fileName = url.searchParams.get('name') || `${cleanFileId}.xlsx`;
+    const filePath = path.join(TEMP_DIR, `${cleanFileId}.xlsx`);
+
+    // Security: validate fileId is a valid UUID pattern
+    const uuidPattern = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
+    if (!uuidPattern.test(cleanFileId)) {
+        res.writeHead(400, { 'Content-Type': 'text/plain' });
+        res.end('Invalid file ID');
+        return;
+    }
+
+    if (!fs.existsSync(filePath)) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('File not found');
+        return;
+    }
+
+    // Set headers for file download
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+
+    const stream = fs.createReadStream(filePath);
+    stream.pipe(res);
+
+    // Clean up file after successful download
+    stream.on('end', () => {
+        // Delay cleanup to ensure download completes
+        setTimeout(() => {
+            try {
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                    console.log(`Cleaned up temp file: ${filePath}`);
+                }
+            } catch (err) {
+                console.error(`Failed to cleanup temp file: ${filePath}`, err);
+            }
+        }, 1000);
+    });
+
+    stream.on('error', (err) => {
+        console.error('File stream error:', err);
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('Internal Server Error');
+    });
+});
+
+httpServer.listen(HTTP_PORT, () => {
+    console.log(`Download HTTP server running on http://localhost:${HTTP_PORT}`);
+});
 
 const wss = new WebSocketServer({ port: PORT });
 
@@ -93,6 +186,8 @@ function spawnCLI(session: ClientSession): IPty | null {
                 FORCE_COLOR: '1',
                 // Ensure proper terminal behavior
                 TERM: 'xterm-256color',
+                // Indicate we're running in web mode (for download handling)
+                AMPHI_WEB_MODE: '1',
             },
         });
 
@@ -101,7 +196,26 @@ function spawnCLI(session: ClientSession): IPty | null {
         // Send PTY output to the WebSocket client
         ptyProcess.onData((data: string) => {
             if (session.ws.readyState === WebSocket.OPEN) {
-                session.ws.send(data);
+                // Check for download sequences
+                const downloadInfo = parseDownloadSequence(data);
+                if (downloadInfo) {
+                    // Send download message as JSON for the browser to handle
+                    const downloadMessage = JSON.stringify({
+                        type: 'download',
+                        fileId: downloadInfo.fileId,
+                        fileName: downloadInfo.fileName,
+                        url: `http://localhost:${HTTP_PORT}/download/${downloadInfo.fileId}?name=${encodeURIComponent(downloadInfo.fileName)}`,
+                    });
+                    session.ws.send(downloadMessage);
+
+                    // Strip the download sequence from terminal output
+                    const cleanData = stripDownloadSequences(data);
+                    if (cleanData) {
+                        session.ws.send(cleanData);
+                    }
+                } else {
+                    session.ws.send(data);
+                }
             }
         });
 
