@@ -10,8 +10,8 @@
 		"test": "pnpm --filter @amphi/web test:e2e",
 		"lint": "turbo lint && pnpm run lint:root",
 		"lint:fix": "turbo lint -- --fix && pnpm run lint:fix:root",
-		"lint:root": "eslint './{*.json,*.js,*.mjs,*.mts,*.ts}' --ext .json,.jsonc,.json5,.js,.ts,.mjs,.mts --ignore-pattern 'apps/**' --ignore-pattern 'packages/**'",
-		"lint:fix:root": "eslint --fix './{*.json,*.js,*.mjs,*.mts,*.ts}' --ext .json,.jsonc,.json5,.js,.ts,.mjs,.mts --ignore-pattern 'apps/**' --ignore-pattern 'packages/**'",
+		"lint:root": "pnpm eslint './{*.json,*.js,*.mjs,*.mts,*.ts}' --ext .json,.jsonc,.json5,.js,.ts,.mjs,.mts",
+		"lint:fix:root": "pnpm lint:root --fix",
 		"typecheck": "turbo typecheck"
 	},
 	"devDependencies": {
@@ -25,7 +25,7 @@
 		"eslint-plugin-prettier": "5.5.4",
 		"eslint-plugin-turbo": "2.6.1",
 		"eslint-plugin-unicorn": "62.0.0",
-		"prettier": "3.6.2",
+		"prettier": "3.7.0",
 		"turbo": "2.6.1",
 		"typescript": "5.9.3"
 	},
