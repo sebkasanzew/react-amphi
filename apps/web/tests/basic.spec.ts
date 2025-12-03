@@ -3,6 +3,15 @@ import { test, expect } from '@playwright/test'
 test.describe('Amphi Web Terminal', () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/')
+
+		// Wait for terminal to be ready
+		await expect(page.locator('.xterm-screen')).toBeVisible()
+
+		// Wait until WebSocket is connected
+		await page.waitForFunction(() => {
+			const hook = globalThis.__AMPHI_XTERM
+			return !!hook && hook.ws?.readyState === 1
+		})
 	})
 
 	test('has correct title', async ({ page }) => {
@@ -34,32 +43,15 @@ test.describe('Amphi Web Terminal', () => {
 	})
 
 	test('displays the Ink CLI app in the terminal', async ({ page }) => {
-		// Wait for terminal container + test hook
-		await expect(page.locator('.xterm-screen')).toBeVisible()
-
-		// Wait until the client-side test hook exposes the active WS and it's open
-		await page.waitForFunction(() => {
-			const hook = globalThis.__AMPHI_XTERM
-			return !!hook && hook.ws?.readyState === 1
-		})
-
-		// The terminal should display the CLI app's users table
-		// The CLI now shows users fetched from JSONPlaceholder API
+		// The CLI now starts with a menu - verify menu is shown
+		await expect(page.locator('.xterm-rows')).toContainText('Main Menu')
 		await expect(page.locator('.xterm-rows')).toContainText('Users')
+		await expect(page.locator('.xterm-rows')).toContainText('About')
 	})
 
 	test('prevents direct shell access - only CLI input is accepted', async ({ page }) => {
-		// Wait for terminal container + test hook
-		await expect(page.locator('.xterm-screen')).toBeVisible()
-
-		// Wait until the client-side test hook exposes the active WS and it's open
-		await page.waitForFunction(() => {
-			const hook = globalThis.__AMPHI_XTERM
-			return !!hook && hook.ws?.readyState === 1
-		})
-
-		// Wait for CLI to be ready
-		await expect(page.locator('.xterm-rows')).toContainText('Users')
+		// Wait for CLI menu to be ready
+		await expect(page.locator('.xterm-rows')).toContainText('Main Menu')
 
 		// Try sending a shell command - it should NOT execute in a shell
 		// The input goes to the CLI app, not to bash/zsh
@@ -70,7 +62,7 @@ test.describe('Amphi Web Terminal', () => {
 
 		// Wait for any potential response by checking the terminal content hasn't changed to shell output
 		// Use a stability check instead of waitForTimeout
-		await expect(page.locator('.xterm-rows')).toContainText('Users')
+		await expect(page.locator('.xterm-rows')).toContainText('Main Menu')
 
 		// The terminal should NOT show typical shell output like file listings
 		// It should still show the CLI interface
@@ -79,7 +71,7 @@ test.describe('Amphi Web Terminal', () => {
 		// Should not contain shell-specific output patterns
 		expect(terminalContent).not.toMatch(/drwx|total \d+|-rw-/)
 
-		// Should still show the CLI content
-		expect(terminalContent).toContain('Users')
+		// Should still show the CLI menu
+		expect(terminalContent).toContain('Main Menu')
 	})
 })

@@ -15,7 +15,11 @@ const columns: Array<{ key: keyof FlatUser; header: string; width?: number }> = 
 
 const isWebMode = process.env.AMPHI_WEB_MODE === '1'
 
-export function UsersView() {
+interface UsersViewProperties {
+	onBack?: () => void
+}
+
+export function UsersView({ onBack }: UsersViewProperties) {
 	const { data, isLoading, isError, error, refetch } = useFetchUsers()
 	const [downloadStatus, setDownloadStatus] = useState<string | null>(null)
 
@@ -44,11 +48,13 @@ export function UsersView() {
 			})
 	}, [data])
 
-	useInput((input) => {
+	useInput((input, key) => {
 		if (input === 'd' || input === 'D') {
 			handleExport()
 		} else if (input === 'r' || input === 'R') {
 			refetch()
+		} else if ((key.escape || input === 'q' || input === 'Q') && onBack) {
+			onBack()
 		}
 	})
 
@@ -102,6 +108,12 @@ export function UsersView() {
 					)}
 					{' | '}
 					Press <Text bold>'r'</Text> to refresh
+					{onBack && (
+						<>
+							{' | '}
+							Press <Text bold>'q'</Text> to go back
+						</>
+					)}
 				</Text>
 				{downloadStatus && <Text color="magenta">{downloadStatus}</Text>}
 			</Box>
