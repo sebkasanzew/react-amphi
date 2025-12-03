@@ -1,8 +1,4 @@
 {
-    "cSpell.words": [
-        "amphi",
-        "Amphi",
-        "AMPHI",
-        "Turborepo"
-    ]
+	"cSpell.words": ["amphi", "Amphi", "AMPHI", "Turborepo"],
+	"errorLens.excludePatterns": ["**/bun.lock"]
 }
