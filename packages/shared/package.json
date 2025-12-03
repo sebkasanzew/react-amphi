@@ -12,8 +12,10 @@
 		}
 	},
 	"scripts": {
-		"generate:ascii": "bun scripts/generate-ascii.ts",
-		"type-check": "tsc --noEmit"
+		"generate:ascii": "bun scripts/generate-ascii.mts",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"typecheck": "tsc --noEmit"
 	},
 	"devDependencies": {
 		"@types/bun": "1.3.3",

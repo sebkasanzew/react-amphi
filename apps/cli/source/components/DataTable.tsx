@@ -38,7 +38,12 @@ export function DataTable<T extends object>({ data, columns }: DataTableProperti
 			{data.map((row, rowIndex) => (
 				<Box key={rowIndex}>
 					{columns.map((col, colIndex) => (
-						<Box key={`${rowIndex}-${colIndex}`} width={pctWidths[colIndex]} paddingLeft={1} paddingRight={1}>
+						<Box
+							key={`${rowIndex}-${colIndex}`}
+							width={pctWidths[colIndex]}
+							paddingLeft={1}
+							paddingRight={1}
+						>
 							<Text color="white">{String(row[col.key] ?? '')}</Text>
 						</Box>
 					))}

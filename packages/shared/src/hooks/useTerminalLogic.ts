@@ -1,39 +1,39 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { TerminalState, TerminalConfig } from '../types';
+import { useState, useEffect, useCallback } from 'react'
+import type { TerminalState, TerminalConfig } from '../types'
 
-const DEFAULT_MESSAGES = [
-    'Welcome to Amphi!',
-];
+const DEFAULT_MESSAGES = ['Welcome to Amphi!']
 
-export const useTerminalLogic = (config?: TerminalConfig): TerminalState & {
-    addOutput: (line: string) => void;
-    clearOutput: () => void;
+export const useTerminalLogic = (
+	config?: TerminalConfig
+): TerminalState & {
+	addOutput: (text: string) => void
+	clearOutput: () => void
 } => {
-    const [output, setOutput] = useState<string[]>([]);
-    const [isReady, setIsReady] = useState(false);
+	const [output, setOutput] = useState<string[]>([])
+	const [isReady, setIsReady] = useState(false)
 
-    useEffect(() => {
-        const messages = config?.welcomeMessage
-            ? [config.welcomeMessage, ...DEFAULT_MESSAGES.slice(1)]
-            : DEFAULT_MESSAGES;
+	useEffect(() => {
+		const messages = config?.welcomeMessage
+			? [config.welcomeMessage, ...DEFAULT_MESSAGES.slice(1)]
+			: DEFAULT_MESSAGES
 
-        const delay = config?.initialDelay ?? 0;
+		const delay = config?.initialDelay ?? 0
 
-        const timer = setTimeout(() => {
-            setOutput(messages);
-            setIsReady(true);
-        }, delay);
+		const timer = setTimeout(() => {
+			setOutput(messages)
+			setIsReady(true)
+		}, delay)
 
-        return () => clearTimeout(timer);
-    }, [config?.welcomeMessage, config?.initialDelay]);
+		return () => clearTimeout(timer)
+	}, [config?.welcomeMessage, config?.initialDelay])
 
-    const addOutput = useCallback((line: string) => {
-        setOutput(prev => [...prev, line]);
-    }, []);
+	const addOutput = useCallback((line: string) => {
+		setOutput((previous) => [...previous, line])
+	}, [])
 
-    const clearOutput = useCallback(() => {
-        setOutput([]);
-    }, []);
+	const clearOutput = useCallback(() => {
+		setOutput([])
+	}, [])
 
-    return { output, isReady, addOutput, clearOutput };
-};
+	return { output, isReady, addOutput, clearOutput }
+}

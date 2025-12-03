@@ -1,7 +1,7 @@
 import js from '@eslint/js'
 import gitignore from 'eslint-config-flat-gitignore'
 import { common, playwrightRecommended } from './eslint.shared.mjs'
-import tsParser from '@typescript-eslint/parser'
+import tseslint from 'typescript-eslint'
 
 export default [
   // reuse patterns in .gitignore via community plugin
@@ -12,14 +12,18 @@ export default [
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
-      parser: tsParser,
+      parser: tseslint.parser,
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
       },
     },
+    plugins: {
+      '@typescript-eslint': tseslint.plugin,
+    },
     rules: {
-      'no-unused-vars': 'warn',
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       'no-console': 'warn',
     },
   },
@@ -31,7 +35,7 @@ export default [
   {
     files: ['**/*.mts', '**/*.mjs'],
     languageOptions: {
-      parser: tsParser,
+      parser: tseslint.parser,
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
@@ -47,6 +51,20 @@ export default [
         fetch: 'readonly',
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
+      },
+    },
+  },
+  // Shared package uses Node/Bun globals
+  {
+    files: ['packages/shared/**'],
+    languageOptions: {
+      globals: {
+        process: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        Buffer: 'readonly',
+        Bun: 'readonly',
+        console: 'readonly',
       },
     },
   },

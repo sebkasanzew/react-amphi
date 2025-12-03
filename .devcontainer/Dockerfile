@@ -5,6 +5,7 @@ ARG USERNAME="vscode"
 ARG USER_UID=1000
 ARG USER_GID=1000
 ARG PLAYWRIGHT_VERSION=1.57.0
+ARG BUN_VERSION=1.3.3
 
 # Install OS packages required for building native modules and node-gyp on Linux
 RUN apt-get update \
@@ -46,13 +47,13 @@ RUN apt-get update \
 # Make sure `python` resolves so tools that expect `python` (node-gyp, etc.) find it
 RUN if [ ! -e /usr/bin/python ]; then ln -s /usr/bin/python3 /usr/bin/python; fi
 
-# Use corepack to install pnpm
-RUN corepack enable
+# Install bun
+RUN curl -fsSL https://bun.sh/install | bash -s -- "bun-v${BUN_VERSION}"
 
 WORKDIR /workspaces/react-amphi
 
-ENV PNPM_HOME="/home/${USERNAME}/.local/share/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
+ENV BUN_INSTALL="/root/.bun"
+ENV PATH="$BUN_INSTALL/bin:$PATH"
 ENV PLAYWRIGHT_BROWSERS_PATH="/home/${USERNAME}/.cache/ms-playwright"
 
 # Ensure the '${USERNAME}' user exists in the final image. Some base images may not
@@ -70,7 +71,6 @@ RUN set -euo pipefail \
   useradd -m -s /bin/bash "$USERNAME" 2>/dev/null || true; \
   fi; \
   fi \
-  && mkdir -p "/home/$USERNAME/.local/share/pnpm" \
   # Only chown if the user now exists (protect against run-time failures)
   && if id -u "$USERNAME" >/dev/null 2>&1; then chown -R "$USERNAME:$USERNAME" "/home/$USERNAME" || true; fi
 
@@ -78,9 +78,9 @@ RUN set -euo pipefail \
 # We pin Playwright to the version used by the workspace tests so install steps are deterministic.
 # This avoids running the full `playwright install` for all browsers at container start.
 RUN set -euo pipefail \
-  # Install Playwright using pnpm (corepack enabled above) so we avoid using npm in the container
-  && pnpm add -g playwright@${PLAYWRIGHT_VERSION} >/dev/null 2>&1 || true \
-  # Run the Playwright installer binary (available on PATH via PNPM_HOME) to install Chromium and deps
+  # Install Playwright using bun
+  && bun add -g playwright@${PLAYWRIGHT_VERSION} >/dev/null 2>&1 || true \
+  # Run the Playwright installer binary to install Chromium and deps
   && playwright install --with-deps chromium || true \
   # Copy Playwright browser cache from root (build-time) to the user's cache
   && if [ -d "/root/.cache/ms-playwright" ]; then mkdir -p /home/${USERNAME}/.cache/ms-playwright && cp -a /root/.cache/ms-playwright/. /home/${USERNAME}/.cache/ms-playwright || true; fi \
@@ -89,5 +89,12 @@ RUN set -euo pipefail \
 RUN set -euo pipefail \
   # Ensure the user's runtime cache folders exist and are writable so
   # runtime commands (postCreateCommand) that run as the given user won't hit EACCES.
-  && mkdir -p /home/${USERNAME}/.cache/node /home/${USERNAME}/.cache/ms-playwright /home/${USERNAME}/.local/share/pnpm \
+  && mkdir -p /home/${USERNAME}/.cache/node /home/${USERNAME}/.cache/ms-playwright \
   && chown -R "${USERNAME}:${USERNAME}" /home/${USERNAME}/.cache /home/${USERNAME}/.local || true
+
+# Install bun for the vscode user as well
+USER ${USERNAME}
+ENV BUN_INSTALL="/home/${USERNAME}/.bun"
+ENV PATH="/home/${USERNAME}/.bun/bin:$PATH"
+RUN curl -fsSL https://bun.sh/install | bash -s -- "bun-v${BUN_VERSION}"
+USER root
