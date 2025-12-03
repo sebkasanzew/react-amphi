@@ -13,15 +13,18 @@
 		}
 	},
 	"scripts": {
-		"build": "tsup",
+		"build": "bun build source/cli.tsx --outdir dist --target bun --conditions=production",
+		"build:exe": "bun run build:exe:macos && bun run build:exe:windows",
+		"build:exe:macos": "bun build source/cli.tsx --compile --outfile dist/amphi-macos --conditions=production",
+		"build:exe:windows": "bun build source/cli.tsx --compile --target=bun-windows-x64 --outfile dist/amphi-windows.exe --conditions=production",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
-		"dev": "tsx source/cli.tsx",
-		"start": "node dist/cli.js",
+		"dev": "bun --conditions=production source/cli.tsx",
+		"start": "bun --conditions=production dist/cli.js",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@amphi/shared": "workspace:*",
+		"@amphi/shared": "*",
 		"@tanstack/react-query": "5.90.11",
 		"exceljs": "4.4.0",
 		"ink": "6.5.1",
@@ -29,10 +32,10 @@
 		"uuid": "13.0.0"
 	},
 	"devDependencies": {
+		"@types/bun": "1.2.10",
 		"@types/node": "24.10.1",
 		"@types/react": "19.2.7",
-		"tsup": "8.5.1",
-		"tsx": "4.20.6",
+		"react-devtools-core": "^7.0.1",
 		"typescript": "5.9.3"
 	}
 }

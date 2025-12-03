@@ -20,12 +20,9 @@ const TEMP_DIR = path.join(os.tmpdir(), 'amphi-downloads')
 // Path to the CLI package
 const CLI_PACKAGE_DIR = path.resolve(__dirname, '../../cli')
 
-// CLI command - use tsx for development, node for production
-const CLI_COMMAND = process.env.NODE_ENV === 'production' ? 'node' : 'npx'
-const CLI_ARGS =
-	process.env.NODE_ENV === 'production'
-		? [path.join(CLI_PACKAGE_DIR, 'dist/cli.js')]
-		: ['tsx', path.join(CLI_PACKAGE_DIR, 'source/cli.tsx')]
+// CLI command - use bun for both development and production
+const CLI_COMMAND = 'bun'
+const CLI_ARGS = ['--conditions=production', path.join(CLI_PACKAGE_DIR, 'source/cli.tsx')]
 
 // Configuration for restart behavior
 const MAX_RESTART_ATTEMPTS = 5

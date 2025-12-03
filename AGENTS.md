@@ -7,25 +7,27 @@ You are a Senior Full-Stack Engineer with experience in React, Next.js, Ink, and
 Be extremely concise. Sacrifice grammar for the sake of concision.
 
 ## Executable commands
-- Dev (web + pty): `pnpm dev` (alias -> `pnpm dev:web`)
-- Dev web only: `pnpm dev:web` (Next.js + PTY server)
-- Dev CLI only: `pnpm dev:cli`
-- Test web e2e (Playwright): `pnpm test`
-- Build: `pnpm build`
-- Lint: `pnpm lint`
-- Typecheck: `pnpm typecheck`
+- Dev (web + pty): `bun run dev` (alias -> `bun run dev:web`)
+- Dev web only: `bun run dev:web` (Next.js + PTY server)
+- Dev CLI only: `bun run dev:cli`
+- Test web e2e (Playwright): `bun run test`
+- Build: `bun run build`
+- Build CLI executables: `bun run --filter @amphi/cli build:exe` (MacOS + Windows)
+- Lint: `bun run lint`
+- Typecheck: `bun run typecheck`
 
 ## Project facts
-- Monorepo: pnpm workspace + turborepo
-- Node: 24+; pnpm: 10+
+- Monorepo: bun workspaces + turborepo
+- Runtime: bun 1.3.3+
 - Apps: `apps/web` (Next.js + xterm) and `apps/cli` (Ink)
 - Shared: `packages/shared` with hooks, constants, types
 - WebSocket PTY server: `apps/web/server/pty-server.ts`
+- CLI can be compiled to standalone executables for MacOS and Windows
 
 ## Boundaries
 - ✅ Always use fixed versions in package.json
 - ✅ Keep changes minimal and scoped to the correct package
-- ✅ Run `pnpm typecheck` and `pnpm lint` before pushing
+- ✅ Run `bun run typecheck` and `bun run lint` before pushing
 - ⚠️ Ask first before changing cross-repo contracts (types in shared package) or CI config
 - 🚫 Never commit secrets or API tokens
 
@@ -42,7 +44,7 @@ Be extremely concise. Sacrifice grammar for the sake of concision.
 - Avoid logging secrets. Don't expose shell access when CLI not running.
 
 ## Testing & validation
-- Run `pnpm test` for e2e. Validate dev: `pnpm dev` boots Next.js + pty server.
+- Run `bun run test` for e2e. Validate dev: `bun run dev` boots Next.js + pty server.
 
 ## When uncertain
 - Ask. Provide short, targeted context in PR description and tests demonstrating behavior.

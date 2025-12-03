@@ -2,16 +2,20 @@
 	"name": "react-amphi-monorepo",
 	"version": "0.0.1",
 	"private": true,
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
 	"scripts": {
 		"build": "turbo build",
-		"dev": "pnpm dev:web",
+		"dev": "bun run dev:web",
 		"dev:web": "turbo dev --filter=@amphi/web --log-prefix=none",
-		"dev:cli": "pnpm --filter @amphi/cli dev",
-		"test": "pnpm --filter @amphi/web test:e2e",
-		"lint": "turbo lint && pnpm run lint:root",
-		"lint:fix": "turbo lint -- --fix && pnpm run lint:fix:root",
-		"lint:root": "pnpm eslint './{*.json,*.js,*.mjs,*.mts,*.ts}' --ext .json,.jsonc,.json5,.js,.ts,.mjs,.mts",
-		"lint:fix:root": "pnpm lint:root --fix",
+		"dev:cli": "cd apps/cli && bun run dev",
+		"test": "bun run --filter @amphi/web test:e2e",
+		"lint": "turbo lint && bun run lint:root",
+		"lint:fix": "turbo lint -- --fix && bun run lint:fix:root",
+		"lint:root": "bunx eslint './{*.json,*.js,*.mjs,*.mts,*.ts}' --ext .json,.jsonc,.json5,.js,.ts,.mjs,.mts",
+		"lint:fix:root": "bun run lint:root --fix",
 		"typecheck": "turbo typecheck"
 	},
 	"devDependencies": {
@@ -29,5 +33,8 @@
 		"turbo": "2.6.1",
 		"typescript": "5.9.3"
 	},
-	"packageManager": "pnpm@10.23.0"
+	"packageManager": "bun@1.3.3",
+	"trustedDependencies": [
+		"node-pty"
+	]
 }

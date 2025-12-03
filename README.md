@@ -6,13 +6,14 @@ A type-safe monorepo template for Next.js (Web) and Ink (CLI) that shares a comm
 
 - 🚀 **Turborepo** - High-performance build system for monorepos
 - ⚛️ **React** - Latest React for both web and CLI
-- 📦 **pnpm Workspaces** - Efficient package management
+- 🥟 **Bun** - Fast all-in-one JavaScript runtime and package manager
 - 🎨 **Ink** - React for CLIs with terminal UI
 - 🌐 **Next.js** - App router with React Server Components
 - 🔄 **Shared Logic** - Reusable hooks and utilities across apps
 - 📝 **TypeScript** - Full type safety throughout
 - 🖥️ **xterm.js** - Full terminal emulator in the browser
 - 🔌 **WebSocket PTY Server** - Bridges web terminals to CLI processes
+- 📦 **Standalone Executables** - Build CLI as single-file binaries for macOS and Windows
 - 🧪 **Playwright** - End-to-end testing for web app
 - 📐 **ESLint** - Code linting with Playwright plugin
 
@@ -87,13 +88,12 @@ A type-safe monorepo template for Next.js (Web) and Ink (CLI) that shares a comm
 
 ### Prerequisites
 
-- Node.js 24+
-- pnpm 10+
+- [Bun](https://bun.sh) 1.3.3+
 
 ### Installation
 
 ```bash
-pnpm install
+bun install
 ```
 
 ### Development
@@ -101,7 +101,7 @@ pnpm install
 Start the web app with the integrated terminal:
 
 ```bash
-pnpm dev
+bun run dev
 ```
 
 This starts:
@@ -112,7 +112,7 @@ The web app will display an interactive terminal that runs the CLI app. Each bro
 
 **CLI app standalone** (Ink) - run directly in your terminal:
 ```bash
-pnpm dev:cli
+bun run dev:cli
 ```
 
 ### Build
@@ -120,7 +120,7 @@ pnpm dev:cli
 Build all packages:
 
 ```bash
-pnpm build
+bun run build
 ```
 
 ### Testing
@@ -128,14 +128,14 @@ pnpm build
 Run Playwright tests for the web app:
 
 ```bash
-pnpm test
+bun run test
 ```
 
 ### Linting & Type Checking
 
 ```bash
-pnpm lint
-pnpm typecheck
+bun run lint
+bun run typecheck
 ```
 
 ## Shared Package
@@ -165,17 +165,52 @@ Features:
 - React-based terminal UI with Ink
 - Keyboard input handling
 - Shared logic with web app via `@amphi/shared`
+- **Standalone executables** for macOS and Windows
 
 ```bash
 # Development
-pnpm --filter @amphi/cli dev
+bun run --filter @amphi/cli dev
 
-# Build
-pnpm --filter @amphi/cli build
+# Build (bundled JS)
+bun run --filter @amphi/cli build
 
 # Run built version
-pnpm --filter @amphi/cli start
+bun run --filter @amphi/cli start
 ```
+
+#### Building Standalone Executables
+
+You can compile the CLI app into standalone executables that can be distributed without requiring Bun or Node.js to be installed:
+
+```bash
+# Build for both macOS and Windows
+bun run --filter @amphi/cli build:exe
+
+# Build for macOS only
+bun run --filter @amphi/cli build:exe:macos
+
+# Build for Windows only
+bun run --filter @amphi/cli build:exe:windows
+```
+
+**Output files** (located in `apps/cli/dist/`):
+
+| Platform | File | Description |
+|----------|------|-------------|
+| macOS | `amphi-macos` | Native macOS executable (~60MB) |
+| Windows | `amphi-windows.exe` | Native Windows executable (~119MB) |
+
+**Running the standalone executables:**
+
+```bash
+# macOS - run directly
+./apps/cli/dist/amphi-macos
+
+# Windows - run in cmd/PowerShell
+.\apps\cli\dist\amphi-windows.exe
+```
+
+> **Note:** The executables are self-contained and include the Bun runtime. No additional dependencies are required on the target machine.
 
 ### Web (`@amphi/web`)
 
@@ -189,13 +224,13 @@ Features:
 
 ```bash
 # Development (starts both Next.js and PTY server)
-pnpm --filter @amphi/web dev
+bun run --filter @amphi/web dev
 
 # Build
-pnpm --filter @amphi/web build
+bun run --filter @amphi/web build
 
 # Production
-pnpm --filter @amphi/web start
+bun run --filter @amphi/web start
 ```
 
 ## How It Works
