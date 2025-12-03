@@ -3,23 +3,23 @@
 This devcontainer is configured for:
 
 - Node 24.x (official devcontainer base)
-- pnpm pinned to the monorepo `packageManager` (pnpm@10.23.0)
+- bun pinned to the monorepo `packageManager`
 - system build tools required by node-gyp (python3, build-essential)
 
 Usage
 
 1. Open this repository in VS Code.
 2. Click the green bottom-left "><" (Remote) icon → "Reopen in Container".
-3. After the container builds, the post-create hook runs `pnpm install`.
+3. After the container builds, the post-create hook runs `bun install`.
 The devcontainer now also installs necessary OS libraries for Playwright and automatically downloads Playwright browser engines so end-to-end tests can run without requiring sudo inside the container. If you're rebuilding an older container you should rebuild the image so these libraries are available.
 
 Quick checks inside the container
 
 ```bash
 node --version    # should be v24.x
-pnpm --version    # should be 10.x
+bun --version    # should be 1.x
 python --version  # should be Python 3.x
-pnpm install      # quick reproducible install
+bun install      # quick reproducible install
 ```
 
 If you hit node-gyp / building errors, the container includes the typical system packages (python3, build-essential). If something is missing, tell me the failing logs and I'll adjust the Dockerfile.
