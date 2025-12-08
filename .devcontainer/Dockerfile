@@ -6,6 +6,7 @@ ARG USER_UID=1000
 ARG USER_GID=1000
 ARG PLAYWRIGHT_VERSION=1.57.0
 ARG BUN_VERSION=1.3.3
+ARG TURBO_VERSION=2.6.1
 
 # Install OS packages required for building native modules and node-gyp on Linux
 RUN apt-get update \
@@ -55,6 +56,7 @@ WORKDIR /workspaces/react-amphi
 ENV BUN_INSTALL="/root/.bun"
 ENV PATH="$BUN_INSTALL/bin:$PATH"
 ENV PLAYWRIGHT_BROWSERS_PATH="/home/${USERNAME}/.cache/ms-playwright"
+ENV DEV_USERNAME="${USERNAME}"
 
 # Ensure the '${USERNAME}' user exists in the final image. Some base images may not
 # include the account; the devcontainer tooling expects this user to be present
@@ -97,4 +99,17 @@ USER ${USERNAME}
 ENV BUN_INSTALL="/home/${USERNAME}/.bun"
 ENV PATH="/home/${USERNAME}/.bun/bin:$PATH"
 RUN curl -fsSL https://bun.sh/install | bash -s -- "bun-v${BUN_VERSION}"
+RUN set -euo pipefail \
+  && bun add -g turbo@${TURBO_VERSION} || true
 USER root
+
+# Install workspace dependencies at image build time so native modules
+# (eg. node-pty) are compiled for the container OS and do not require
+# bun install to run as root during postCreate. This avoids runtime
+# permission / mountpoint issues when the workspace is mounted from
+# Windows hosts.
+RUN set -euo pipefail \
+  && if [ -f /workspaces/react-amphi/package.json ]; then bun install; fi \
+  && if id -u "${USERNAME}" >/dev/null 2>&1; then \
+  chown -R "${USERNAME}:${USERNAME}" /workspaces/react-amphi/node_modules /home/${USERNAME}/.bun || true; \
+  fi

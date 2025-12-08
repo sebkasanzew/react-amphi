@@ -10,7 +10,7 @@ Usage
 
 1. Open this repository in VS Code.
 2. Click the green bottom-left "><" (Remote) icon → "Reopen in Container".
-3. After the container builds, the post-create hook runs `bun install`.
+3. After the container builds, the post-create hook installs Playwright's Chromium browser. Dependencies are installed at image build time so native modules are compiled for the container OS.
 The devcontainer now also installs necessary OS libraries for Playwright and automatically downloads Playwright browser engines so end-to-end tests can run without requiring sudo inside the container. If you're rebuilding an older container you should rebuild the image so these libraries are available.
 
 Quick checks inside the container
