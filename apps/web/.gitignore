@@ -2,3 +2,7 @@
 out/**
 build/**
 next-env.d.ts
+
+# Common ignored artifact from top-level .gitignore
+# Ensure local eslint gitignore() picks up this monorepo folder
+test-results

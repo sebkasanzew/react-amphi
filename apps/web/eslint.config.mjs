@@ -1,11 +1,14 @@
-import { defineConfig, globalIgnores } from 'eslint/config'
 import gitignore from 'eslint-config-flat-gitignore'
 import nextVitals from 'eslint-config-next/core-web-vitals'
 import nextTs from 'eslint-config-next/typescript'
+import { defineConfig } from 'eslint/config'
 import { common, playwrightRecommended } from '../../eslint.shared.mjs'
 
 const eslintConfig = defineConfig([
   // reuse patterns in repo .gitignore (and subproject .gitignore if present)
+  // NOTE: `gitignore()` looks at the project-level .gitignore (the nearest one),
+  // so in monorepo setups you may need to add common ignore patterns here as
+  // well (e.g. `test-results`) when running ESLint from this package.
   gitignore(),
   ...nextVitals,
   ...nextTs,
@@ -21,9 +24,6 @@ const eslintConfig = defineConfig([
       'unicorn/prefer-module': 'off',
     },
   },
-  // shared json / prettier / filename-case rules included via `...common`
-
-  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts']),
 ])
 
 export default eslintConfig
