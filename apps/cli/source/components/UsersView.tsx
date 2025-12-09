@@ -4,16 +4,16 @@ import { useFetchUsers, FlatUser } from '../hooks/useFetchUsers.js'
 import { DataTable } from './DataTable.js'
 import { exportToExcel } from '../utils/excel.js'
 
-const columns: Array<{ key: keyof FlatUser; header: string; width?: number }> = [
+const columns = [
 	{ key: 'id', header: 'ID', width: 4 },
 	{ key: 'name', header: 'Name', width: 22 },
 	{ key: 'username', header: 'Username', width: 14 },
 	{ key: 'email', header: 'Email', width: 26 },
 	{ key: 'city', header: 'City', width: 14 },
 	{ key: 'company', header: 'Company', width: 20 },
-]
+] as const satisfies Array<{ key: keyof FlatUser; header: string; width?: number }>
 
-const isWebMode = process.env.AMPHI_WEB_MODE === '1'
+const isWebMode = Bun.env.AMPHI_WEB_MODE === '1'
 
 interface UsersViewProperties {
 	onBack?: () => void

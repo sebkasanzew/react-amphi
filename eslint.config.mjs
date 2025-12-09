@@ -4,7 +4,6 @@ import { common, playwrightRecommended } from './eslint.shared.mjs'
 import tseslint from 'typescript-eslint'
 
 export default [
-  // reuse patterns in .gitignore via community plugin
   gitignore(),
   js.configs.recommended,
   {
@@ -42,11 +41,11 @@ export default [
       },
     },
   },
-  // CLI app runs on Node (Ink) and needs some globals like process/fetch/setTimeout
   {
     files: ['apps/cli/**'],
     languageOptions: {
       globals: {
+        Bun: 'readonly',
         process: 'readonly',
         fetch: 'readonly',
         setTimeout: 'readonly',
@@ -54,7 +53,6 @@ export default [
       },
     },
   },
-  // Shared package uses Node/Bun globals
   {
     files: ['packages/shared/**'],
     languageOptions: {
@@ -68,5 +66,4 @@ export default [
       },
     },
   },
-  // prettier included via shared common
 ]

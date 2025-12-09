@@ -3,7 +3,6 @@
 	"dockerFile": "Dockerfile",
 	"context": "..",
 	"forwardPorts": [3000, 3001, 3002],
-	"remoteUser": "vscode",
-	"postCreateCommand": "cd apps/web && bunx playwright install chromium",
-	"mounts": ["source=react-amphi-bun-cache,target=/workspaces/react-amphi/.bun,type=volume"]
+	"remoteUser": "bun",
+	"postCreateCommand": "bun install && cd apps/web && bunx playwright install chromium"
 }

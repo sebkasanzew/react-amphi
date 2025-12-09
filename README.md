@@ -88,7 +88,7 @@ A type-safe monorepo template for Next.js (Web) and Ink (CLI) that shares a comm
 
 ### Prerequisites
 
-- [Bun](https://bun.sh) 1.3.3+
+- [Bun](https://bun.sh)
 
 ### Installation
 
