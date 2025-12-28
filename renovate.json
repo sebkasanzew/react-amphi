@@ -1,0 +1,21 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["config:best-practices", ":dependencyDashboard", ":semanticCommits", ":maintainLockFilesWeekly"],
+	"labels": ["dependencies"],
+	"packageRules": [
+		{
+			"matchPackagePatterns": ["*"],
+			"matchUpdateTypes": ["minor", "patch"],
+			"groupName": "all non-major dependencies",
+			"groupSlug": "all-minor-patch"
+		},
+		{
+			"matchPackageNames": ["bun"],
+			"matchManagers": ["github-actions"],
+			"extends": ["schedule:weekly"]
+		}
+	],
+	"ignoreDeps": [],
+	"rangeStrategy": "bump",
+	"postUpdateOptions": ["bunDedupe"]
+}
