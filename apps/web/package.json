@@ -6,7 +6,7 @@
 		"server": "npx tsx server/pty-server.ts",
 		"build": "next build",
 		"start": "next start",
-		"lint": "eslint .",
+		"lint": "bunx --bun eslint .",
 		"test:e2e": "playwright test",
 		"typecheck": "tsc --noEmit"
 	},

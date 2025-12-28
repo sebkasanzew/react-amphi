@@ -14,7 +14,7 @@
 		"test": "bun run --filter @amphi/web test:e2e",
 		"lint": "turbo lint && bun run lint:root",
 		"lint:fix": "turbo lint -- --fix && bun run lint:fix:root",
-		"lint:root": "bunx eslint './{*.json,*.js,*.mjs,*.mts,*.ts}' --ext .json,.jsonc,.json5,.js,.ts,.mjs,.mts",
+		"lint:root": "bunx --bun eslint './{*.json,*.js,*.mjs,*.mts,*.ts}' --ext .json,.jsonc,.json5,.js,.ts,.mjs,.mts",
 		"lint:fix:root": "bun run lint:root --fix",
 		"typecheck": "turbo typecheck"
 	},

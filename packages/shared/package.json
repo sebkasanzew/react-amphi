@@ -13,8 +13,8 @@
 	},
 	"scripts": {
 		"generate:ascii": "bun scripts/generate-ascii.mts",
-		"lint": "eslint .",
-		"lint:fix": "eslint . --fix",
+		"lint": "bunx --bun eslint .",
+		"lint:fix": "bunx --bun eslint . --fix",
 		"typecheck": "tsc --noEmit"
 	},
 	"devDependencies": {

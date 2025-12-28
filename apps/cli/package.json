@@ -19,8 +19,8 @@
 		"build:exe": "bun run build:exe:macos && bun run build:exe:windows",
 		"build:exe:macos": "bun build source/cli.tsx --compile --outfile dist/amphi-macos --conditions=production",
 		"build:exe:windows": "bun build source/cli.tsx --compile --target=bun-windows-x64 --outfile dist/amphi-windows.exe --conditions=production",
-		"lint": "eslint .",
-		"lint:fix": "eslint . --fix",
+		"lint": "bunx --bun eslint .",
+		"lint:fix": "bunx --bun eslint . --fix",
 		"dev": "bun --conditions=production source/cli.tsx",
 		"start": "bun --conditions=production dist/cli.js",
 		"typecheck": "tsc --noEmit"
