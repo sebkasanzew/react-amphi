@@ -1,0 +1,106 @@
+name: Release CLI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/cli/**'
+      - 'packages/shared/**'
+  release:
+    types: [published]
+  workflow_dispatch:
+
+concurrency:
+  group: release-cli-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+jobs:
+  build-cli:
+    name: Build CLI (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: bun-linux-x64
+            artifact: amphi-linux
+            extension: ''
+          - os: macos-latest
+            target: bun-darwin-arm64
+            artifact: amphi-macos-arm64
+            extension: ''
+          - os: macos-13
+            target: bun-darwin-x64
+            artifact: amphi-macos-x64
+            extension: ''
+          - os: windows-latest
+            target: bun-windows-x64
+            artifact: amphi-windows
+            extension: '.exe'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Generate ASCII art
+        run: bun run --filter @amphi/shared generate:ascii
+
+      - name: Build CLI executable
+        working-directory: apps/cli
+        run: bun build source/cli.tsx --compile --target=${{ matrix.target }} --outfile dist/${{ matrix.artifact }}${{ matrix.extension }} --conditions=production
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: apps/cli/dist/${{ matrix.artifact }}${{ matrix.extension }}
+          retention-days: 30
+
+  release:
+    name: Create Release Assets
+    needs: build-cli
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create checksums
+        run: |
+          cd artifacts
+          for dir in */; do
+            cd "$dir"
+            for file in *; do
+              sha256sum "$file" > "$file.sha256"
+            done
+            cd ..
+          done
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/amphi-linux/*
+            artifacts/amphi-macos-arm64/*
+            artifacts/amphi-macos-x64/*
+            artifacts/amphi-windows/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

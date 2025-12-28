@@ -5,7 +5,7 @@ test.describe('Terminal Rendering Performance', () => {
 		await page.goto('/')
 
 		// Wait for terminal to be ready
-		await expect(page.locator('.xterm-screen')).toBeVisible({ timeout: 10000 })
+		await expect(page.locator('.xterm-screen')).toBeVisible({ timeout: 10_000 })
 
 		// Wait until WebSocket is connected or terminal is ready
 		// Note: Backend might not be fully functional, but we can still test rendering
@@ -14,7 +14,7 @@ test.describe('Terminal Rendering Performance', () => {
 				const hook = globalThis.__AMPHI_XTERM
 				return !!hook && hook.term
 			},
-			{ timeout: 10000 }
+			{ timeout: 10_000 }
 		)
 	})
 
@@ -47,16 +47,12 @@ test.describe('Terminal Rendering Performance', () => {
 
 					for (const mutation of mutations) {
 						// Check if entire rows container was replaced (indicates full rerender)
-						if (mutation.type === 'childList') {
-							const currentChildCount = xtermScreen.querySelectorAll('.xterm-rows > div').length
-
-							// If all rows are removed and re-added, it's a full rerender
-							if (
-								mutation.removedNodes.length > initialChildCount / 2 &&
-								mutation.addedNodes.length > initialChildCount / 2
-							) {
-								fullRerenderDetected = true
-							}
+						if (
+							mutation.type === 'childList' &&
+							mutation.removedNodes.length > initialChildCount / 2 &&
+							mutation.addedNodes.length > initialChildCount / 2
+						) {
+							fullRerenderDetected = true
 						}
 
 						// Count text content changes (expected for actual updates)
@@ -77,7 +73,7 @@ test.describe('Terminal Rendering Performance', () => {
 				const hook = globalThis.__AMPHI_XTERM
 				if (hook?.ws) {
 					// Send arrow down to navigate menu (triggers terminal update)
-					hook.ws.send('\x1b[B') // Arrow down escape sequence
+					hook.ws.send('\u001B[B') // Arrow down escape sequence
 				}
 
 				// Wait for mutations to settle
@@ -140,10 +136,11 @@ test.describe('Terminal Rendering Performance', () => {
 		// Send navigation input
 		await page.evaluate(() => {
 			const hook = globalThis.__AMPHI_XTERM
-			hook?.ws?.send?.('\x1b[B') // Arrow down
+			hook?.ws?.send?.('\u001B[B') // Arrow down
 		})
 
 		// Wait a bit for the update
+		// eslint-disable-next-line playwright/no-wait-for-timeout
 		await page.waitForTimeout(300)
 
 		// Take screenshot after interaction

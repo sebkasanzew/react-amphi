@@ -1,0 +1,19 @@
+# Default owners for everything
+* @sebkasanzew
+
+# Web app
+/apps/web/ @sebkasanzew
+
+# CLI app
+/apps/cli/ @sebkasanzew
+
+# Shared packages
+/packages/shared/ @sebkasanzew
+
+# CI/CD
+/.github/ @sebkasanzew
+
+# Root config
+/*.json @sebkasanzew
+/*.mjs @sebkasanzew
+/*.mts @sebkasanzew
