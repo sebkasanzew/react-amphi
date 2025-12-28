@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, memo } from 'react'
 import { Terminal } from '@xterm/xterm'
 import { FitAddon } from '@xterm/addon-fit'
 import '@xterm/xterm/css/xterm.css'
@@ -46,7 +46,7 @@ function parseDownloadMessage(data: string): DownloadMessage | null {
 	return null
 }
 
-export default function XtermComponent({ wsUrl = 'ws://localhost:3001' }: XtermComponentProperties) {
+function XtermComponent({ wsUrl = 'ws://localhost:3001' }: XtermComponentProperties) {
 	const terminalReference = useRef<HTMLDivElement>(null)
 	const termInstance = useRef<Terminal | null>(null)
 	const wsInstance = useRef<WebSocket | null>(null)
@@ -214,3 +214,6 @@ export default function XtermComponent({ wsUrl = 'ws://localhost:3001' }: XtermC
 		/>
 	)
 }
+
+// Memoize component to prevent unnecessary rerenders from parent
+export default memo(XtermComponent)
