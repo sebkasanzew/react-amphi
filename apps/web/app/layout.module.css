@@ -1,0 +1,13 @@
+.body {
+  margin: 0;
+}
+
+/* Hide xterm scrollbar to prevent white line on right */
+:global(.xterm-viewport::-webkit-scrollbar) {
+  width: 0;
+  height: 0;
+}
+
+:global(.xterm-viewport) {
+  scrollbar-width: none;
+}
