@@ -27,6 +27,15 @@ jobs:
         with:
           bun-version: latest
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            python3 \
+            python3-dev \
+            pkg-config
+
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
@@ -45,6 +54,15 @@ jobs:
         with:
           bun-version: latest
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            python3 \
+            python3-dev \
+            pkg-config
+
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
@@ -62,6 +80,15 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            python3 \
+            python3-dev \
+            pkg-config
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
