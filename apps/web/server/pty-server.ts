@@ -11,8 +11,8 @@ import { parseDownloadSequence, stripDownloadSequences } from '@amphi/shared'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const PORT = Number.parseInt(process.env.PTY_PORT || '3001', 10)
-const HTTP_PORT = Number.parseInt(process.env.DOWNLOAD_PORT || '3002', 10)
+const PORT = Number.parseInt(process.env.PTY_PORT || process.env.PORT || '3001', 10)
+const PUBLIC_URL = process.env.PUBLIC_URL || `http://localhost:${PORT}`
 
 // Temp directory for download files (same as CLI)
 const TEMP_DIR = path.join(os.tmpdir(), 'amphi-downloads')
@@ -72,7 +72,7 @@ const httpServer = http.createServer((request, response) => {
 		return
 	}
 
-	const url = new URL(request.url || '/', `http://localhost:${HTTP_PORT}`)
+	const url = new URL(request.url || '/', PUBLIC_URL)
 	const pathParts = url.pathname.split('/')
 
 	// Expect /download/:fileId
@@ -131,11 +131,11 @@ const httpServer = http.createServer((request, response) => {
 	})
 })
 
-httpServer.listen(HTTP_PORT, () => {
-	console.log(`Download HTTP server running on http://localhost:${HTTP_PORT}`)
+httpServer.listen(PORT, () => {
+	console.log(`Server running on port ${PORT}`)
 })
 
-const wss = new WebSocketServer({ port: PORT })
+const wss = new WebSocketServer({ server: httpServer })
 
 console.log(`PTY WebSocket server running on ws://localhost:${PORT}`)
 console.log(`CLI will be spawned from: ${CLI_PACKAGE_DIR}`)
@@ -197,7 +197,7 @@ function spawnCLI(session: ClientSession): IPty | null {
 						type: 'download',
 						fileId: downloadInfo.fileId,
 						fileName: downloadInfo.fileName,
-						url: `http://localhost:${HTTP_PORT}/download/${downloadInfo.fileId}?name=${encodeURIComponent(downloadInfo.fileName)}`,
+						url: `${PUBLIC_URL}/download/${downloadInfo.fileId}?name=${encodeURIComponent(downloadInfo.fileName)}`,
 					})
 					session.ws.send(downloadMessage)
 
