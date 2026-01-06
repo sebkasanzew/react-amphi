@@ -3,5 +3,5 @@
 	"buildCommand": "bun run build",
 	"installCommand": "bun install --frozen-lockfile",
 	"framework": "nextjs",
-	"outputDirectory": "apps/web/.next"
+	"outputDirectory": ".next"
 }
