@@ -1,4 +1,6 @@
+import React from 'react'
 import type { Metadata } from 'next'
+import styles from './layout.module.css'
 
 export const metadata: Metadata = {
 	title: 'Amphi Web Terminal',
@@ -11,20 +13,8 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html lang="en">
-			<head>
-				<style>{`
-                    /* Hide xterm scrollbar to prevent white line on right */
-                    .xterm-viewport::-webkit-scrollbar {
-                        width: 0;
-                        height: 0;
-                    }
-                    .xterm-viewport {
-                        scrollbar-width: none;
-                    }
-                `}</style>
-			</head>
-			<body style={{ margin: 0 }}>{children}</body>
+		<html lang="en" suppressHydrationWarning>
+			<body className={styles.body}>{children}</body>
 		</html>
 	)
 }

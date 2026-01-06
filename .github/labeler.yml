@@ -1,0 +1,46 @@
+# Label configuration for PR Labeler
+
+# App labels
+'app:web':
+  - changed-files:
+      - any-glob-to-any-file: 'apps/web/**'
+
+'app:cli':
+  - changed-files:
+      - any-glob-to-any-file: 'apps/cli/**'
+
+# Package labels
+'pkg:shared':
+  - changed-files:
+      - any-glob-to-any-file: 'packages/shared/**'
+
+# Type labels
+'type:docs':
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.md'
+          - 'docs/**'
+
+'type:ci':
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**'
+          - 'turbo.json'
+
+'type:config':
+  - changed-files:
+      - any-glob-to-any-file:
+          - '*.json'
+          - '*.mjs'
+          - '*.mts'
+          - 'tsconfig*.json'
+          - '.eslint*'
+          - '.prettier*'
+
+'type:tests':
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.spec.ts'
+          - '**/*.test.ts'
+          - '**/tests/**'
+          - 'playwright.config.ts'

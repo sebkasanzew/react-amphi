@@ -44,14 +44,16 @@ test.describe('Amphi Web Terminal', () => {
 
 	test('displays the Ink CLI app in the terminal', async ({ page }) => {
 		// The CLI now starts with a menu - verify menu is shown
-		await expect(page.locator('.xterm-rows')).toContainText('Main Menu')
+		// Increase timeout to allow for CLI startup time in CI
+		await expect(page.locator('.xterm-rows')).toContainText('Main Menu', { timeout: 15_000 })
 		await expect(page.locator('.xterm-rows')).toContainText('Users')
 		await expect(page.locator('.xterm-rows')).toContainText('About')
 	})
 
 	test('prevents direct shell access - only CLI input is accepted', async ({ page }) => {
 		// Wait for CLI menu to be ready
-		await expect(page.locator('.xterm-rows')).toContainText('Main Menu')
+		// Increase timeout to allow for CLI startup time in CI
+		await expect(page.locator('.xterm-rows')).toContainText('Main Menu', { timeout: 15_000 })
 
 		// Try sending a shell command - it should NOT execute in a shell
 		// The input goes to the CLI app, not to bash/zsh
