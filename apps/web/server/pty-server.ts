@@ -47,6 +47,9 @@ function getCleanEnvironment(): Record<string, string> {
 		}
 	}
 
+	// Remove CI environment variable to ensure Ink behaves interactively
+	delete environment.CI
+
 	return environment
 }
 
