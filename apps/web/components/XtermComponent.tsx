@@ -46,7 +46,9 @@ function parseDownloadMessage(data: string): DownloadMessage | null {
 	return null
 }
 
-function XtermComponent({ wsUrl = 'ws://localhost:3001' }: XtermComponentProperties) {
+function XtermComponent({ wsUrl }: XtermComponentProperties) {
+	// Default to localhost if not provided, or use environment variable
+	const url = wsUrl || process.env.NEXT_PUBLIC_PTY_WS_URL || 'ws://localhost:3001'
 	const terminalReference = useRef<HTMLDivElement>(null)
 	const termInstance = useRef<Terminal | null>(null)
 	const wsInstance = useRef<WebSocket | null>(null)
@@ -99,7 +101,7 @@ function XtermComponent({ wsUrl = 'ws://localhost:3001' }: XtermComponentPropert
 		termInstance.current = term
 
 		// Connect to WebSocket
-		const ws = new WebSocket(wsUrl)
+		const ws = new WebSocket(url)
 		wsInstance.current = ws
 
 		// Handle incoming WebSocket messages manually to intercept downloads
@@ -194,7 +196,7 @@ function XtermComponent({ wsUrl = 'ws://localhost:3001' }: XtermComponentPropert
 				/* ignore */
 			}
 		}
-	}, [wsUrl])
+	}, [url])
 
 	return (
 		<div

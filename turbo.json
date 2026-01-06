@@ -1,6 +1,6 @@
 {
 	"$schema": "https://turbo.build/schema.json",
-	"globalPassThroughEnv": ["AMPHI_WEB_MODE", "CI", "PTY_PORT", "DOWNLOAD_PORT", "NODE_ENV"],
+	"globalPassThroughEnv": ["AMPHI_WEB_MODE", "CI", "PTY_PORT", "DOWNLOAD_PORT", "NODE_ENV", "PUBLIC_URL", "PORT"],
 	"remoteCache": {
 		"enabled": true
 	},
