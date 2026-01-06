@@ -11,7 +11,7 @@
 		"dev": "bun run dev:web",
 		"dev:web": "turbo dev --filter=@amphi/web --log-prefix=none",
 		"dev:cli": "cd apps/cli && bun run dev",
-		"test": "bun run --filter @amphi/web test:e2e",
+		"test": "turbo test:e2e --filter=@amphi/web",
 		"lint": "turbo lint && bun run lint:root",
 		"lint:fix": "turbo lint -- --fix && bun run lint:fix:root",
 		"lint:root": "bunx --bun eslint './{*.json,*.js,*.mjs,*.mts,*.ts}' --ext .json,.jsonc,.json5,.js,.ts,.mjs,.mts",
