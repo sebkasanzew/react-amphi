@@ -1,3 +1,19 @@
 {
-	"recommendations": ["usernamehw.errorlens"]
+	"recommendations": [
+		"usernamehw.errorlens",
+		"mhutchie.git-graph",
+		"dbaeumer.vscode-eslint",
+		"eamodio.gitlens",
+		"amazonwebservices.amazon-q-vscode",
+		"streetsidesoftware.code-spell-checker",
+		"mikestead.dotenv",
+		"editorconfig.editorconfig",
+		"codeandstuff.package-json-upgrade",
+		"ms-playwright.playwright",
+		"blazejkustra.react-compiler-marker",
+		"bradlc.vscode-tailwindcss",
+		"mattpocock.ts-error-translator",
+		"johnsoncodehk.vscode-tsconfig-helper",
+		"orta.vscode-twoslash-queries"
+	]
 }
