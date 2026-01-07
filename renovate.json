@@ -7,7 +7,10 @@
 			"matchUpdateTypes": ["minor", "patch"],
 			"groupName": "all non-major dependencies",
 			"groupSlug": "all-minor-patch",
-			"matchPackageNames": ["*"]
+			"matchPackageNames": ["*"],
+			"automerge": true,
+			"automergeType": "pr",
+			"automergeStrategy": "auto"
 		},
 		{
 			"matchPackageNames": ["bun"],
@@ -17,5 +20,10 @@
 	],
 	"ignoreDeps": [],
 	"rangeStrategy": "bump",
+	"automerge": true,
+	"automergeType": "pr",
+	"automergeStrategy": "auto",
+	"platformAutomerge": true,
+	"vulnerabilityAlerts": { "automerge": true },
 	"postUpdateOptions": ["bunDedupe"]
 }
