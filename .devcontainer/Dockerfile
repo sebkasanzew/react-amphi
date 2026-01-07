@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/javascript-node:24
+FROM mcr.microsoft.com/devcontainers/javascript-node:24@sha256:bc9064c4a22cae05a94f3e1e5fcb03b294d44068133dc888b02f1a9d7f439244
 
 # Make build args available inside the build stage (so RUN can reference them)
 ARG USERNAME="bun"
