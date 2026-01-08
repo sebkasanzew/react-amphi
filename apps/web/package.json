@@ -19,7 +19,7 @@
 		"node-pty": "1.1.0",
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
-		"ws": "8.18.3"
+		"ws": "8.19.0"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "3.3.3",
@@ -36,6 +36,6 @@
 		"exceljs": "4.4.0",
 		"tsx": "4.21.0",
 		"typescript": "5.9.3",
-		"typescript-eslint": "8.51.0"
+		"typescript-eslint": "8.52.0"
 	}
 }
