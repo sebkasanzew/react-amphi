@@ -1,6 +1,7 @@
 import gitignore from 'eslint-config-flat-gitignore'
 import nextVitals from 'eslint-config-next/core-web-vitals'
 import nextTs from 'eslint-config-next/typescript'
+import { fixupConfigRules } from '@eslint/compat'
 import { defineConfig } from 'eslint/config'
 import { common, playwrightRecommended } from '../../eslint.shared.mjs'
 
@@ -10,8 +11,8 @@ const eslintConfig = defineConfig([
   // so in monorepo setups you may need to add common ignore patterns here as
   // well (e.g. `test-results`) when running ESLint from this package.
   gitignore(),
-  ...nextVitals,
-  ...nextTs,
+  ...fixupConfigRules(nextVitals),
+  ...fixupConfigRules(nextTs),
   { ...playwrightRecommended, files: ['tests/**/*.spec.ts', 'tests/**/*.test.ts'] },
   // shared rules/plugins/configs
   ...common,

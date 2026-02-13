@@ -19,6 +19,7 @@
 		"typecheck": "turbo typecheck"
 	},
 	"devDependencies": {
+		"@eslint/compat": "2.0.2",
 		"@eslint/js": "10.0.1",
 		"@typescript-eslint/parser": "8.55.0",
 		"eslint": "10.0.0",
