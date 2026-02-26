@@ -32,6 +32,37 @@ function triggerDownload(url: string, fileName: string) {
 }
 
 /**
+ * Safely call fitAddon.fit() inside a requestAnimationFrame to avoid
+ * errors when xterm's renderer isn't ready or the addon was disposed.
+ */
+function safeFitAddon(fitAddon: FitAddon) {
+	try {
+		if (fitAddon && typeof fitAddon.fit === 'function') {
+			requestAnimationFrame(() => {
+				try {
+					fitAddon.fit()
+				} catch {
+					/* ignore */
+				}
+			})
+		}
+	} catch {
+		// ignore
+	}
+}
+
+/**
+ * Remove the test hook if it belongs to the given WebSocket instance.
+ */
+function cleanupTestHook(ws: WebSocket) {
+	try {
+		if (globalThis.__AMPHI_XTERM?.ws === ws) {
+			delete globalThis.__AMPHI_XTERM
+		}
+	} catch {}
+}
+
+/**
  * Check if data is a JSON download message
  */
 function parseDownloadMessage(data: string): DownloadMessage | null {
@@ -74,30 +105,9 @@ function XtermComponent({ wsUrl }: XtermComponentProperties) {
 
 		term.open(terminalReference.current)
 		// Call fit() safely after the terminal is opened and DOM is painted.
-		// In some environments xterm's renderer can be not yet initialized which
-		// results in runtime errors when reading `dimensions`. Scheduling the
-		// call avoids calling fit too early and guards against unexpected
-		// errors coming from xterm internals.
-		const safeFit = () => {
-			try {
-				// guard in case the addon or terminal was disposed already
-				if (fitAddon && typeof fitAddon.fit === 'function') {
-					// run inside a frame to ensure layout has settled
-					requestAnimationFrame(() => {
-						try {
-							fitAddon.fit()
-						} catch {
-							/* ignore */
-						}
-					})
-				}
-			} catch {
-				// ignore
-			}
-		}
-
-		// call fit a tick later and expose the instance
-		setTimeout(safeFit)
+		// Scheduling the call avoids calling fit too early and guards against
+		// unexpected errors coming from xterm internals.
+		setTimeout(() => safeFitAddon(fitAddon))
 		termInstance.current = term
 
 		// Connect to WebSocket
@@ -141,19 +151,7 @@ function XtermComponent({ wsUrl }: XtermComponentProperties) {
 		const handleResize = () => {
 			// use safe fit on resize to avoid calling into xterm internals while
 			// the terminal is being torn down or renderer hasn't been created yet.
-			try {
-				if (fitAddon && typeof fitAddon.fit === 'function') {
-					requestAnimationFrame(() => {
-						try {
-							fitAddon.fit()
-						} catch {
-							/* ignore */
-						}
-					})
-				}
-			} catch {
-				// ignore
-			}
+			safeFitAddon(fitAddon)
 			if (ws.readyState === WebSocket.OPEN) {
 				ws.send(
 					JSON.stringify({
@@ -186,9 +184,7 @@ function XtermComponent({ wsUrl }: XtermComponentProperties) {
 			}
 			try {
 				// cleanup test hook
-				if (globalThis.__AMPHI_XTERM?.ws === ws) {
-					delete globalThis.__AMPHI_XTERM
-				}
+				cleanupTestHook(ws)
 			} catch {}
 			try {
 				ws.close()
