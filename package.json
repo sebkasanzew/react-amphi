@@ -34,7 +34,7 @@
 		"turbo": "2.9.4",
 		"typescript": "6.0.2",
 		"typescript-eslint": "8.58.0",
-		"vercel": "50.39.0"
+		"vercel": "50.40.0"
 	},
 	"packageManager": "bun@1.3.4",
 	"trustedDependencies": [
