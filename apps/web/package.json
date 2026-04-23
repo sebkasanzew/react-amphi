@@ -32,7 +32,7 @@
 		"concurrently": "9.2.1",
 		"eslint": "10.2.1",
 		"eslint-config-next": "16.2.4",
-		"eslint-plugin-playwright": "2.10.1",
+		"eslint-plugin-playwright": "2.10.2",
 		"exceljs": "4.4.0",
 		"tsx": "4.21.0",
 		"typescript": "6.0.3",
