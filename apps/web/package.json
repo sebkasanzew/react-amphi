@@ -23,9 +23,9 @@
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "3.3.5",
-		"@playwright/test": "1.59.1",
+		"@playwright/test": "1.60.0",
 		"@types/bun": "1.3.13",
-		"@types/node": "24.12.3",
+		"@types/node": "24.12.4",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",
 		"@types/ws": "8.18.1",
@@ -36,6 +36,6 @@
 		"exceljs": "4.4.0",
 		"tsx": "4.21.0",
 		"typescript": "6.0.3",
-		"typescript-eslint": "8.59.2"
+		"typescript-eslint": "8.59.3"
 	}
 }
