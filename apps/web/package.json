@@ -34,8 +34,8 @@
 		"eslint-config-next": "16.2.6",
 		"eslint-plugin-playwright": "2.10.3",
 		"exceljs": "4.4.0",
-		"tsx": "4.22.1",
+		"tsx": "4.22.2",
 		"typescript": "6.0.3",
-		"typescript-eslint": "8.59.3"
+		"typescript-eslint": "8.59.4"
 	}
 }
