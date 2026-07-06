@@ -20,7 +20,7 @@
         "turbo": "2.10.2",
         "typescript": "6.0.3",
         "typescript-eslint": "8.62.1",
-        "vercel": "54.18.7",
+        "vercel": "54.20.0",
       },
     },
     "apps/cli": {
@@ -72,7 +72,7 @@
         "eslint-config-next": "16.2.10",
         "eslint-plugin-playwright": "2.10.4",
         "exceljs": "4.4.0",
-        "tsx": "4.22.4",
+        "tsx": "4.22.5",
         "typescript": "6.0.3",
         "typescript-eslint": "8.62.1",
       },
@@ -1605,7 +1605,7 @@
 
     "tslib": ["tslib@2.8.1", "", {}, "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="],
 
-    "tsx": ["tsx@4.22.4", "", { "dependencies": { "esbuild": "~0.28.0" }, "optionalDependencies": { "fsevents": "~2.3.3" }, "bin": { "tsx": "dist/cli.mjs" } }, "sha512-X8EX+XV4QR5xCsrgxaED954zTDfY8KqlDtskKEL0cHhyS/P8b4IFOvGDQpsC9Q1XnLq915wEfwwY/zzskCtmhg=="],
+    "tsx": ["tsx@4.22.5", "", { "dependencies": { "esbuild": "~0.28.0" }, "optionalDependencies": { "fsevents": "~2.3.3" }, "bin": { "tsx": "dist/cli.mjs" } }, "sha512-F7JnSfPl5ASt6LqwWyUQ3T8BwN3q0eQEbFMYa2iRWaVQmmudo0d7fRmwM4O002gsvW1bs0yBYioutsAjqLJMvQ=="],
 
     "turbo": ["turbo@2.10.2", "", { "optionalDependencies": { "@turbo/darwin-64": "2.10.2", "@turbo/darwin-arm64": "2.10.2", "@turbo/linux-64": "2.10.2", "@turbo/linux-arm64": "2.10.2", "@turbo/windows-64": "2.10.2", "@turbo/windows-arm64": "2.10.2" }, "bin": { "turbo": "bin/turbo" } }, "sha512-wTExrNrRjB8qzIcg+ZLm0A3GFNLDsWNwdS/RBXB0FPrBDyzk3i96Yx+TxWZC7a0k1SIreFB8ciUbxjmEqTH8IQ=="],
 
@@ -1649,7 +1649,7 @@
 
     "uuid": ["uuid@14.0.1", "", { "bin": { "uuid": "dist-node/bin/uuid" } }, "sha512-6ZxzVpzDXDa3bJWaHilVayA+BH/1zmxCJoVgvmqJnid/gPoKHxUrS/aC/T6LGQtNHT+XHG9fXPJB4d+IrU30Ew=="],
 
-    "vercel": ["vercel@54.18.7", "", { "dependencies": { "@vercel/backends": "0.8.21", "@vercel/blob": "2.4.0", "@vercel/build-utils": "13.32.2", "@vercel/cli-auth": "0.3.0", "@vercel/cli-config": "0.2.0", "@vercel/container": "0.0.4", "@vercel/detect-agent": "1.2.3", "@vercel/elysia": "0.1.98", "@vercel/express": "0.1.112", "@vercel/fastify": "0.1.101", "@vercel/fun": "1.3.0", "@vercel/go": "3.10.2", "@vercel/h3": "0.1.107", "@vercel/hono": "0.2.101", "@vercel/hydrogen": "1.4.0", "@vercel/koa": "0.1.81", "@vercel/nestjs": "0.2.102", "@vercel/next": "4.20.2", "@vercel/node": "5.8.22", "@vercel/prepare-flags-definitions": "0.3.0", "@vercel/python": "6.47.3", "@vercel/redwood": "2.5.0", "@vercel/remix-builder": "5.9.1", "@vercel/ruby": "2.5.1", "@vercel/rust": "1.4.0", "@vercel/static-build": "2.11.4", "chokidar": "4.0.0", "esbuild": "0.27.0", "jose": "5.9.6", "luxon": "^3.4.0", "proxy-agent": "6.4.0", "sandbox": "3.1.2", "smol-toml": "1.5.2", "undici": "5.29.0", "zod": "4.1.11" }, "bin": { "vc": "dist/vc.js", "vercel": "dist/vc.js" } }, "sha512-qOSlp029mwhEKwZTTXp4oMu3RGklGacSVTuLiH8l8bzmAcME1suDEk4ttdIzbbPiEDasyATJoQMBMh+pYkxrDQ=="],
+    "vercel": ["vercel@54.20.0", "", { "dependencies": { "@vercel/backends": "0.8.21", "@vercel/blob": "2.4.0", "@vercel/build-utils": "13.32.2", "@vercel/cli-auth": "0.3.0", "@vercel/cli-config": "0.2.0", "@vercel/container": "0.0.4", "@vercel/detect-agent": "1.2.3", "@vercel/elysia": "0.1.98", "@vercel/express": "0.1.112", "@vercel/fastify": "0.1.101", "@vercel/fun": "1.3.0", "@vercel/go": "3.10.2", "@vercel/h3": "0.1.107", "@vercel/hono": "0.2.101", "@vercel/hydrogen": "1.4.0", "@vercel/koa": "0.1.81", "@vercel/nestjs": "0.2.102", "@vercel/next": "4.20.2", "@vercel/node": "5.8.22", "@vercel/prepare-flags-definitions": "0.3.0", "@vercel/python": "6.47.3", "@vercel/redwood": "2.5.0", "@vercel/remix-builder": "5.9.1", "@vercel/ruby": "2.5.1", "@vercel/rust": "1.4.0", "@vercel/static-build": "2.11.4", "chokidar": "4.0.0", "esbuild": "0.27.0", "jose": "5.9.6", "luxon": "^3.4.0", "proxy-agent": "6.4.0", "sandbox": "3.1.2", "smol-toml": "1.5.2", "undici": "5.29.0", "zod": "4.1.11" }, "bin": { "vc": "dist/vc.js", "vercel": "dist/vc.js" } }, "sha512-EYrd7MVs+JhHhc93aGl0uV9jvapClqRWHJz3g6l7ZgrttxD6U1v/3iWYZg/yJMVtZ9h9nmHICZXJiD0k8YFAyA=="],
 
     "web-vitals": ["web-vitals@0.2.4", "", {}, "sha512-6BjspCO9VriYy12z356nL6JBS0GYeEcA457YyRzD+dD6XYCQ75NKhcOHUMHentOE7OcVCIXXDvOm0jKFfQG2Gg=="],
 
