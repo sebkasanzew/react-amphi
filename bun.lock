@@ -20,7 +20,7 @@
         "turbo": "2.10.4",
         "typescript": "6.0.3",
         "typescript-eslint": "8.63.0",
-        "vercel": "54.21.0",
+        "vercel": "54.21.1",
       },
     },
     "apps/cli": {
@@ -1649,7 +1649,7 @@
 
     "uuid": ["uuid@14.0.1", "", { "bin": { "uuid": "dist-node/bin/uuid" } }, "sha512-6ZxzVpzDXDa3bJWaHilVayA+BH/1zmxCJoVgvmqJnid/gPoKHxUrS/aC/T6LGQtNHT+XHG9fXPJB4d+IrU30Ew=="],
 
-    "vercel": ["vercel@54.21.0", "", { "dependencies": { "@vercel/backends": "0.8.21", "@vercel/blob": "2.4.0", "@vercel/build-utils": "13.32.2", "@vercel/cli-auth": "0.3.0", "@vercel/cli-config": "0.2.0", "@vercel/container": "0.0.4", "@vercel/detect-agent": "1.2.3", "@vercel/elysia": "0.1.98", "@vercel/express": "0.1.112", "@vercel/fastify": "0.1.101", "@vercel/fun": "1.3.0", "@vercel/go": "3.10.2", "@vercel/h3": "0.1.107", "@vercel/hono": "0.2.101", "@vercel/hydrogen": "1.4.0", "@vercel/koa": "0.1.81", "@vercel/nestjs": "0.2.102", "@vercel/next": "4.20.3", "@vercel/node": "5.8.22", "@vercel/prepare-flags-definitions": "0.3.0", "@vercel/python": "6.48.0", "@vercel/redwood": "2.5.0", "@vercel/remix-builder": "5.9.1", "@vercel/ruby": "2.5.1", "@vercel/rust": "1.4.0", "@vercel/static-build": "2.11.4", "chokidar": "4.0.0", "esbuild": "0.27.0", "jose": "5.9.6", "luxon": "^3.4.0", "proxy-agent": "6.4.0", "sandbox": "3.4.0", "smol-toml": "1.5.2", "undici": "5.29.0", "zod": "4.1.11" }, "bin": { "vc": "dist/vc.js", "vercel": "dist/vc.js" } }, "sha512-jI3bgqFZWFy/tC+XkXy4NNWYLCmCJuP+VOel6U9KyTKJV0SZ3Mb5azZU4PyNm6Ed37jSNVIfWBvu4R4g0wt/Ow=="],
+    "vercel": ["vercel@54.21.1", "", { "dependencies": { "@vercel/backends": "0.8.21", "@vercel/blob": "2.4.0", "@vercel/build-utils": "13.32.2", "@vercel/cli-auth": "0.3.0", "@vercel/cli-config": "0.2.0", "@vercel/container": "0.0.4", "@vercel/detect-agent": "1.2.3", "@vercel/elysia": "0.1.98", "@vercel/express": "0.1.112", "@vercel/fastify": "0.1.101", "@vercel/fun": "1.3.0", "@vercel/go": "3.10.2", "@vercel/h3": "0.1.107", "@vercel/hono": "0.2.101", "@vercel/hydrogen": "1.4.0", "@vercel/koa": "0.1.81", "@vercel/nestjs": "0.2.102", "@vercel/next": "4.20.3", "@vercel/node": "5.8.22", "@vercel/prepare-flags-definitions": "0.3.0", "@vercel/python": "6.48.0", "@vercel/redwood": "2.5.0", "@vercel/remix-builder": "5.9.1", "@vercel/ruby": "2.5.1", "@vercel/rust": "1.4.0", "@vercel/static-build": "2.11.4", "chokidar": "4.0.0", "esbuild": "0.27.0", "jose": "5.9.6", "luxon": "^3.4.0", "proxy-agent": "6.4.0", "sandbox": "3.4.0", "smol-toml": "1.5.2", "undici": "5.29.0", "zod": "4.1.11" }, "bin": { "vc": "dist/vc.js", "vercel": "dist/vc.js" } }, "sha512-GDs3FqEwZJHOyrzUXMjQBg8Fd1qOKOBuzE1exrhKq6hHBaHHuGnfvfHzRpm7j9CC+SjnRr/CY30tUNyU28gN4A=="],
 
     "web-vitals": ["web-vitals@0.2.4", "", {}, "sha512-6BjspCO9VriYy12z356nL6JBS0GYeEcA457YyRzD+dD6XYCQ75NKhcOHUMHentOE7OcVCIXXDvOm0jKFfQG2Gg=="],
 
