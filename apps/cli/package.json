@@ -29,7 +29,7 @@
 		"@amphi/shared": "workspace:*",
 		"@tanstack/react-query": "5.101.2",
 		"exceljs": "4.4.0",
-		"ink": "7.1.0",
+		"ink": "7.1.1",
 		"react": "19.2.7",
 		"uuid": "14.0.1"
 	},
