@@ -27,10 +27,10 @@
 	},
 	"dependencies": {
 		"@amphi/shared": "workspace:*",
-		"@tanstack/react-query": "5.101.3",
+		"@tanstack/react-query": "5.101.4",
 		"exceljs": "4.4.0",
 		"ink": "7.1.1",
-		"react": "19.2.7",
+		"react": "19.2.8",
 		"uuid": "14.0.1"
 	},
 	"devDependencies": {
