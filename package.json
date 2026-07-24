@@ -32,7 +32,7 @@
 		"eslint-plugin-unicorn": "64.0.0",
 		"prettier": "3.9.5",
 		"turbo": "2.10.5",
-		"typescript": "6.0.3",
+		"typescript": "7.0.2",
 		"typescript-eslint": "8.65.0",
 		"vercel": "56.4.1"
 	},
