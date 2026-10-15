@@ -4,6 +4,6 @@ import { render } from 'ink'
 import App from './app.js'
 
 // Clear screen on startup
-process.stdout.write('\u001B[2J\u001B[3J\u001B[H')
+process.stdout.write('\u{1B}[2J\u{1B}[3J\u{1B}[H')
 
 render(<App />)

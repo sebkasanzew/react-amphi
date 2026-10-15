@@ -22,7 +22,7 @@ export function Menu({ items, onSelect, title }: MenuProperties) {
 
 	useInput((input, key) => {
 		if (key.upArrow) {
-			setSelectedIndex((previous) => (previous > 0 ? previous - 1 : currentItems.length - 1))
+			setSelectedIndex((previous) => (previous > 0 ? previous : currentItems.length) - 1)
 		} else if (key.downArrow) {
 			setSelectedIndex((previous) => (previous < currentItems.length - 1 ? previous + 1 : 0))
 		} else if (key.return) {

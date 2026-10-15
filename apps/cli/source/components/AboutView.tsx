@@ -7,7 +7,7 @@ interface AboutViewProperties {
 
 export function AboutView({ onBack }: AboutViewProperties) {
 	useInput((input, key) => {
-		if (key.escape || input === 'q' || input === 'Q') {
+		if (input === 'q' || input === 'Q' || key.escape) {
 			onBack()
 		}
 	})

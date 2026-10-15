@@ -27,18 +27,18 @@ function isWebMode(): boolean {
  */
 function openFile(filePath: string): void {
 	const platform = process.platform
-	let cmd: string
+	let command: string
 
 	if (platform === 'darwin') {
-		cmd = `open "${filePath}"`
+		command = `open "${filePath}"`
 	} else if (platform === 'win32') {
-		cmd = `start "" "${filePath}"`
+		command = `start "" "${filePath}"`
 	} else {
 		// Linux and others
-		cmd = `xdg-open "${filePath}"`
+		command = `xdg-open "${filePath}"`
 	}
 
-	exec(cmd, (error) => {
+	exec(command, (error) => {
 		if (error) {
 			// Silently fail - the file path will be shown to user
 		}

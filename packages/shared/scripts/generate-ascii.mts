@@ -1,12 +1,12 @@
 #!/usr/bin/env bun
 /**
- * Generates ascii.ts from ascii.source.ts
- *
- * This script converts the human-readable ASCII art (with actual Unicode chars)
- * into a template format that survives Bun's bundler without getting escaped.
- *
- * Run with: bun run generate:ascii
- */
+Generates ascii.ts from ascii.source.ts
+
+This script converts the human-readable ASCII art (with actual Unicode chars)
+into a template format that survives Bun's bundler without getting escaped.
+
+Run with: bun run generate:ascii
+*/
 
 const scriptsDirectory = import.meta.dirname
 const constantsDirectory = `${scriptsDirectory}/../src/constants`
@@ -48,7 +48,7 @@ const LIGHT = String.fromCodePoint(0x25_91) // ░ Light Shade
 const TEMPLATE = \`${template}\`
 
 // Replace placeholders with actual Unicode characters at runtime
-export const ASCII_ART = TEMPLATE.replaceAll('#', FULL).replaceAll('.', LIGHT)
+export const ASCII_ART = TEMPLATE.replaceAll('#', () => FULL).replaceAll('.', () => LIGHT)
 `
 
 // Write the generated file
