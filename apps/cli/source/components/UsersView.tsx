@@ -23,29 +23,28 @@ export function UsersView({ onBack }: UsersViewProperties) {
 	const { data, isLoading, isError, error, refetch } = useFetchUsers()
 	const [downloadStatus, setDownloadStatus] = useState<string | null>(null)
 
-	const handleExport = useCallback(() => {
+	const handleExport = useCallback(async () => {
 		if (!data) return
 
 		setDownloadStatus('Preparing download...')
 
-		exportToExcel(data, {
-			fileName: 'users-export.xlsx',
-			sheetName: 'Users',
-			columns: columns.map((col) => ({
-				key: col.key,
-				header: col.header,
-				width: col.width,
-			})),
-		})
-			.then(() => {
-				const message = isWebMode ? 'Download ready! Check your browser.' : 'File saved and opened!'
-				setDownloadStatus(message)
-				setTimeout(() => setDownloadStatus(null), 3000)
+		try {
+			await exportToExcel(data, {
+				fileName: 'users-export.xlsx',
+				sheetName: 'Users',
+				columns: columns.map((col) => ({
+					key: col.key,
+					header: col.header,
+					width: col.width,
+				})),
 			})
-			.catch(() => {
-				setDownloadStatus('Failed to export')
-				setTimeout(() => setDownloadStatus(null), 3000)
-			})
+			const message = isWebMode ? 'Download ready! Check your browser.' : 'File saved and opened!'
+			setDownloadStatus(message)
+			setTimeout(() => setDownloadStatus(null), 3000)
+		} catch {
+			setDownloadStatus('Failed to export')
+			setTimeout(() => setDownloadStatus(null), 3000)
+		}
 	}, [data])
 
 	useInput((input, key) => {
@@ -53,7 +52,7 @@ export function UsersView({ onBack }: UsersViewProperties) {
 			handleExport()
 		} else if (input === 'r' || input === 'R') {
 			refetch()
-		} else if ((key.escape || input === 'q' || input === 'Q') && onBack) {
+		} else if (onBack && (input === 'q' || input === 'Q' || key.escape)) {
 			onBack()
 		}
 	})

@@ -107,7 +107,7 @@ function XtermComponent({ wsUrl }: XtermComponentProperties) {
 		// Call fit() safely after the terminal is opened and DOM is painted.
 		// Scheduling the call avoids calling fit too early and guards against
 		// unexpected errors coming from xterm internals.
-		setTimeout(() => safeFitAddon(fitAddon))
+		setTimeout(() => safeFitAddon(fitAddon), 0)
 		termInstance.current = term
 
 		// Connect to WebSocket
@@ -142,6 +142,7 @@ function XtermComponent({ wsUrl }: XtermComponentProperties) {
 		// Expose test hook so Playwright can access the active terminal+socket in tests
 		// This is only useful for automated tests and will be cleaned up on unmount.
 		try {
+			// eslint-disable-next-line unicorn/no-global-object-property-assignment
 			globalThis.__AMPHI_XTERM = { term, ws }
 		} catch {
 			// ignore in non-browser or restricted environments

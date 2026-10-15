@@ -10,8 +10,8 @@
  */
 
 // OSC sequence markers
-export const OSC_START = '\u001B]1337;'
-export const OSC_END = '\u0007'
+export const OSC_START = '\u{1B}]1337;'
+export const OSC_END = '\u{7}'
 
 // Protocol prefix for file downloads
 export const FILE_DOWNLOAD_PREFIX = 'AmphiDownload='

@@ -11,7 +11,7 @@ import { parseDownloadSequence, stripDownloadSequences } from '@amphi/shared'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const PORT = Number.parseInt(process.env.PTY_PORT || process.env.PORT || '3001', 10)
+const PORT = Number(process.env.PTY_PORT || process.env.PORT || '3001')
 const PUBLIC_URL = process.env.PUBLIC_URL || `http://localhost:${PORT}`
 
 // Temp directory for download files (same as CLI)
@@ -150,16 +150,18 @@ interface ClientSession {
 }
 
 function sendStatusMessage(ws: WebSocket, type: string, message: string) {
-	if (ws.readyState === WebSocket.OPEN) {
-		// Send as ANSI escape sequence to display in terminal
-		const coloredMessage =
-			type === 'error'
-				? `\u001B[31m${message}\u001B[0m\r\n` // Red for errors
-				: type === 'warning'
-					? `\u001B[33m${message}\u001B[0m\r\n` // Yellow for warnings
-					: `\u001B[36m${message}\u001B[0m\r\n` // Cyan for info
-		ws.send(coloredMessage)
+	if (ws.readyState !== WebSocket.OPEN) {
+		return
 	}
+
+	// Send as ANSI escape sequence to display in terminal
+	const coloredMessage =
+		type === 'error'
+			? `\u{1B}[31m${message}\u{1B}[0m\r\n` // Red for errors
+			: type === 'warning'
+				? `\u{1B}[33m${message}\u{1B}[0m\r\n` // Yellow for warnings
+				: `\u{1B}[36m${message}\u{1B}[0m\r\n` // Cyan for info
+	ws.send(coloredMessage)
 }
 
 function spawnCLI(session: ClientSession): IPty | null {
@@ -188,27 +190,29 @@ function spawnCLI(session: ClientSession): IPty | null {
 
 		// Send PTY output to the WebSocket client
 		ptyProcess.onData((data: string) => {
-			if (session.ws.readyState === WebSocket.OPEN) {
-				// Check for download sequences
-				const downloadInfo = parseDownloadSequence(data)
-				if (downloadInfo) {
-					// Send download message as JSON for the browser to handle
-					const downloadMessage = JSON.stringify({
-						type: 'download',
-						fileId: downloadInfo.fileId,
-						fileName: downloadInfo.fileName,
-						url: `${PUBLIC_URL}/download/${downloadInfo.fileId}?name=${encodeURIComponent(downloadInfo.fileName)}`,
-					})
-					session.ws.send(downloadMessage)
+			if (session.ws.readyState !== WebSocket.OPEN) {
+				return
+			}
 
-					// Strip the download sequence from terminal output
-					const cleanData = stripDownloadSequences(data)
-					if (cleanData) {
-						session.ws.send(cleanData)
-					}
-				} else {
-					session.ws.send(data)
+			// Check for download sequences
+			const downloadInfo = parseDownloadSequence(data)
+			if (downloadInfo) {
+				// Send download message as JSON for the browser to handle
+				const downloadMessage = JSON.stringify({
+					type: 'download',
+					fileId: downloadInfo.fileId,
+					fileName: downloadInfo.fileName,
+					url: `${PUBLIC_URL}/download/${downloadInfo.fileId}?name=${encodeURIComponent(downloadInfo.fileName)}`,
+				})
+				session.ws.send(downloadMessage)
+
+				// Strip the download sequence from terminal output
+				const cleanData = stripDownloadSequences(data)
+				if (cleanData) {
+					session.ws.send(cleanData)
 				}
+			} else {
+				session.ws.send(data)
 			}
 		})
 
@@ -243,22 +247,26 @@ function spawnCLI(session: ClientSession): IPty | null {
 
 				// Clear terminal before restart
 				setTimeout(() => {
-					if (!session.isClosing && session.ws.readyState === WebSocket.OPEN) {
-						// Clear screen and move cursor to top
-						session.ws.send('\u001B[2J\u001B[H')
-						sendStatusMessage(session.ws, 'info', '[System] Restarting CLI...')
-
-						const newPty = spawnCLI(session)
-						if (newPty) {
-							session.ptyProcess = newPty
-							// Reset restart counter on successful spawn after a delay
-							setTimeout(() => {
-								if (session.ptyProcess && session.ptyProcess.pid) {
-									session.restartAttempts = 0
-								}
-							}, 5000)
-						}
+					if (session.isClosing || session.ws.readyState !== WebSocket.OPEN) {
+						return
 					}
+
+					// Clear screen and move cursor to top
+					session.ws.send('\u{1B}[2J\u{1B}[H')
+					sendStatusMessage(session.ws, 'info', '[System] Restarting CLI...')
+
+					const newPty = spawnCLI(session)
+					if (!newPty) {
+						return
+					}
+
+					session.ptyProcess = newPty
+					// Reset restart counter on successful spawn after a delay
+					setTimeout(() => {
+						if (session.ptyProcess && session.ptyProcess.pid) {
+							session.restartAttempts = 0
+						}
+					}, 5000)
 				}, delay)
 			} else {
 				sendStatusMessage(
@@ -344,20 +352,24 @@ wss.on('connection', (ws: WebSocket) => {
 	ws.on('close', () => {
 		console.log('Client disconnected, cleaning up')
 		session.isClosing = true
-		if (session.ptyProcess) {
-			session.ptyProcess.kill()
-			session.ptyProcess = null
+		if (!session.ptyProcess) {
+			return
 		}
+
+		session.ptyProcess.kill()
+		session.ptyProcess = null
 	})
 
 	// Handle WebSocket errors
 	ws.on('error', (error) => {
 		console.error('WebSocket error:', error)
 		session.isClosing = true
-		if (session.ptyProcess) {
-			session.ptyProcess.kill()
-			session.ptyProcess = null
+		if (!session.ptyProcess) {
+			return
 		}
+
+		session.ptyProcess.kill()
+		session.ptyProcess = null
 	})
 })
 

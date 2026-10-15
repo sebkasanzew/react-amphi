@@ -24,4 +24,4 @@ const TEMPLATE = `
 `
 
 // Replace placeholders with actual Unicode characters at runtime
-export const ASCII_ART = TEMPLATE.replaceAll('#', FULL).replaceAll('.', LIGHT)
+export const ASCII_ART = TEMPLATE.replaceAll('#', () => FULL).replaceAll('.', () => LIGHT)

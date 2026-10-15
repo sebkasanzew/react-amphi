@@ -29,9 +29,6 @@ test.describe('Terminal Rendering Performance', () => {
 				fullRerenderDetected: boolean
 				textContentChanges: number
 			}>((resolve) => {
-				let totalMutations = 0
-				let fullRerenderDetected = false
-				let textContentChanges = 0
 				const xtermScreen = document.querySelector('.xterm-screen')
 
 				if (!xtermScreen) {
@@ -39,8 +36,12 @@ test.describe('Terminal Rendering Performance', () => {
 					return
 				}
 
+				let totalMutations = 0
+				let isFullRerenderDetected = false
+				let textContentChanges = 0
+
 				// Count child nodes before mutation
-				const initialChildCount = xtermScreen.querySelectorAll('.xterm-rows > div').length
+				const initialChildCount = xtermScreen.querySelectorAll(':scope .xterm-rows > div').length
 
 				const observer = new MutationObserver((mutations) => {
 					totalMutations += mutations.length
@@ -52,7 +53,7 @@ test.describe('Terminal Rendering Performance', () => {
 							mutation.removedNodes.length > initialChildCount / 2 &&
 							mutation.addedNodes.length > initialChildCount / 2
 						) {
-							fullRerenderDetected = true
+							isFullRerenderDetected = true
 						}
 
 						// Count text content changes (expected for actual updates)
@@ -73,7 +74,7 @@ test.describe('Terminal Rendering Performance', () => {
 				const hook = globalThis.__AMPHI_XTERM
 				if (hook?.ws) {
 					// Send arrow down to navigate menu (triggers terminal update)
-					hook.ws.send('\u001B[B') // Arrow down escape sequence
+					hook.ws.send('\u{1B}[B') // Arrow down escape sequence
 				}
 
 				// Wait for mutations to settle
@@ -81,7 +82,7 @@ test.describe('Terminal Rendering Performance', () => {
 					observer.disconnect()
 					resolve({
 						totalMutations,
-						fullRerenderDetected,
+						fullRerenderDetected: isFullRerenderDetected,
 						textContentChanges,
 					})
 				}, 1000) // Wait 1 second for mutations
@@ -107,11 +108,13 @@ test.describe('Terminal Rendering Performance', () => {
 				// Store reference to check if it changes
 				const checkInterval = setInterval(() => {
 					const currentTerm = globalThis.__AMPHI_XTERM?.term
-					if (currentTerm !== initialTerm) {
-						// Terminal instance changed - this shouldn't happen
-						clearInterval(checkInterval)
-						resolve(2) // Recreated
+					if (currentTerm === initialTerm) {
+						return
 					}
+
+					// Terminal instance changed - this shouldn't happen
+					clearInterval(checkInterval)
+					resolve(2) // Recreated
 				}, 100)
 
 				// After 1 second, if instance hasn't changed, we're good
@@ -136,7 +139,7 @@ test.describe('Terminal Rendering Performance', () => {
 		// Send navigation input
 		await page.evaluate(() => {
 			const hook = globalThis.__AMPHI_XTERM
-			hook?.ws?.send?.('\u001B[B') // Arrow down
+			hook?.ws?.send?.('\u{1B}[B') // Arrow down
 		})
 
 		// Wait a bit for the update
