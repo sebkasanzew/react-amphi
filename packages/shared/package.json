@@ -25,6 +25,6 @@
 		"typescript": "npm:@typescript/typescript6@6.0.2"
 	},
 	"dependencies": {
-		"react": "19.3.0"
+		"react": "19.3.1"
 	}
 }
