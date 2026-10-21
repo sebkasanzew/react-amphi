@@ -30,7 +30,7 @@
 		"@types/react-dom": "19.3.0",
 		"@types/ws": "8.18.2",
 		"concurrently": "10.0.6",
-		"eslint": "10.12.0",
+		"eslint": "10.13.0",
 		"eslint-config-next": "16.4.2",
 		"eslint-plugin-playwright": "2.12.1",
 		"exceljs": "4.4.0",
