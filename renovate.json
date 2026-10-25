@@ -24,6 +24,5 @@
 	"automergeType": "pr",
 	"automergeStrategy": "auto",
 	"platformAutomerge": true,
-	"vulnerabilityAlerts": { "automerge": true },
-	"postUpdateOptions": ["bunDedupe"]
+	"vulnerabilityAlerts": { "automerge": true }
 }
