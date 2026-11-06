@@ -26,7 +26,7 @@
 		"eslint-config-flat-gitignore": "2.4.0",
 		"eslint-config-prettier": "10.1.8",
 		"eslint-plugin-jsonc": "3.4.2",
-		"eslint-plugin-playwright": "2.12.1",
+		"eslint-plugin-playwright": "2.12.2",
 		"eslint-plugin-prettier": "5.5.7",
 		"eslint-plugin-turbo": "2.11.10",
 		"eslint-plugin-unicorn": "79.0.0",
@@ -35,7 +35,7 @@
 		"@typescript/native": "npm:typescript@7.0.2",
 		"typescript": "npm:@typescript/typescript6@6.0.2",
 		"typescript-eslint": "8.72.1",
-		"vercel": "65.9.0"
+		"vercel": "65.10.0"
 	},
 	"packageManager": "bun@1.4.4",
 	"trustedDependencies": [
