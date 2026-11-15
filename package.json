@@ -30,7 +30,7 @@
 		"eslint-plugin-prettier": "5.5.7",
 		"eslint-plugin-turbo": "2.11.11",
 		"eslint-plugin-unicorn": "79.0.0",
-		"prettier": "3.10.0",
+		"prettier": "3.10.1",
 		"turbo": "2.11.11",
 		"@typescript/native": "npm:typescript@7.0.2",
 		"typescript": "npm:@typescript/typescript6@6.0.2",
