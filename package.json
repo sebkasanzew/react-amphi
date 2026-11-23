@@ -35,9 +35,9 @@
 		"@typescript/native": "npm:typescript@7.0.2",
 		"typescript": "npm:@typescript/typescript6@6.0.2",
 		"typescript-eslint": "8.73.0",
-		"vercel": "66.2.0"
+		"vercel": "66.4.0"
 	},
-	"packageManager": "bun@1.4.4",
+	"packageManager": "bun@1.4.5",
 	"trustedDependencies": [
 		"node-pty"
 	]
